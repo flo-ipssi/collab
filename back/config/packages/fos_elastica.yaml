@@ -1,0 +1,9 @@
+fos_elastica:
+  clients:
+    default: { host: '%env(ELASTICSEARCH_HOST)%', port: '%env(ELASTICSEARCH_PORT)%' }
+  indexes:
+    user:
+      finder: ~
+      properties:
+        name: ~
+        location: { type: geo_point }
