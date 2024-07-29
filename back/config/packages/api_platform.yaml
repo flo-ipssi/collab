@@ -16,3 +16,9 @@ api_platform:
             rfc_7807_compliant_errors: true
     keep_legacy_inflector: false
     use_symfony_listeners: true
+    swagger:
+        api_keys:
+            jwt:
+                name: Authorization
+                type: header
+
