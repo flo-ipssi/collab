@@ -30,5 +30,15 @@ Colllab est une application web permettant aux utilisateurs de s'inscrire, d'ajo
 
 1. Cloner le dépôt :
    ```bash
-   git clone https://github.com/username/my_music_platform.git
-   cd my_music_platform
+   git clone https://github.com/flo-ipssi/colllab.git
+   cd colllab
+
+
+
+## Troubleshooting
+Error: UNABLE_TO_VERIFY_LEAF_SIGNATURE
+L'installation de paquets avec npm est souvent liée à des problèmes de certificat SS
+
+Solution
+   ```bash
+      npm config set strict-ssl false

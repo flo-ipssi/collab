@@ -2,12 +2,49 @@
 import Link from "next/link";
 import { SVGProps } from "react";
 import LoginForm from "./LoginForm";
+import { MenuIcon, Music2Icon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
-
     return (
         <>
-            <header className="px-4 lg:px-6 h-14 flex items-center bg-background shadow">
+            <header className="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-md">
+                <div className="container flex items-center justify-between h-16 px-4 md:px-6">
+                    <Link href="#" className="flex items-center gap-2" prefetch={false}>
+                        <Music2Icon className="w-6 h-6" />
+                        <span className="text-lg font-semibold">Music Maestro</span>
+                    </Link>
+                    <nav className="hidden md:flex items-center gap-4">
+                        <Link
+                            href="#"
+                            className="text-sm font-medium hover:underline"
+                            prefetch={false}
+                        >
+                            Features
+                        </Link>
+                        <Link
+                            href="#"
+                            className="text-sm font-medium hover:underline"
+                            prefetch={false}
+                        >
+                            Player
+                        </Link>
+                        <Link
+                            href="#"
+                            className="text-sm font-medium hover:underline"
+                            prefetch={false}
+                        >
+                            Contact
+                        </Link>
+                        <LoginForm />
+                    </nav>
+                    <Button variant="outline" size="sm" className="md:hidden">
+                        <MenuIcon className="w-5 h-5" />
+                        <span className="sr-only">Toggle Menu</span>
+                    </Button>
+                </div>
+            </header>
+            {/* <header className="px-4 lg:px-6 h-14 flex items-center bg-background shadow">
                 <Link
                     href="/home"
                     className="flex items-center justify-center"
@@ -33,9 +70,9 @@ const Navbar = () => {
                     </Link>
                 </nav>
                 <div className="ml-auto flex gap-2 items-center">
-                    <LoginForm />
+                    
                 </div>
-            </header>
+            </header> */}
         </>
     );
 };

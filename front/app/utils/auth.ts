@@ -28,10 +28,10 @@ export const authOptions = {
       }
       return Promise.resolve(token); // JWT interface we declared
     },
-    async session({ session, token }) {
-      session.user = token.user;
-      return session; // Session interface we declared
-    },
+    // async session({ session, token }) {
+    //   session.user = token.user as string;
+    //   return session; // Session interface we declared
+    // },
   },
   providers: [
     CredentialsProvider({
