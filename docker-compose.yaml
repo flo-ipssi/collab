@@ -25,7 +25,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - collab_net
-      
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
@@ -51,7 +51,6 @@ services:
     networks:
       - collab_net
 
-
   # elasticsearch:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
   #   environment:
@@ -67,11 +66,11 @@ services:
     build:
       context: ./front
       dockerfile: Dockerfile
-    working_dir: /app
     volumes:
-      - ./front:/app
+      - ./front:/usr/src/app/react-docker
+      - /usr/src/app/front/node_modules
     # command: ["sh", "-c", "npm run build && npm start"]
-    command: ["sh", "-c", "npm run build && npm run dev"]
+    # command: ["sh", "-c", "npm run dev"]
     ports:
       - "3000:3000"
     depends_on:
