@@ -1,5 +1,11 @@
 # Colllab
 
+## BUG EN COURS 
+Il est possible que le lancement de l'application front-end en Next.js rencontre des problèmes. Ce bug est inscrit dans la liste des tâches à résoudre.
+
+Pour contourner ce problème, installez Node.js localement et lancez la commande npm run dev.
+
+
 ## Description
 Colllab est une application web permettant aux utilisateurs de s'inscrire, d'ajouter leurs compétences et leur matériel musical, et de rechercher des artistes en fonction de leur localisation.
 
@@ -33,6 +39,17 @@ Colllab est une application web permettant aux utilisateurs de s'inscrire, d'ajo
    git clone https://github.com/flo-ipssi/colllab.git
    cd colllab
 
+2. Lancez les conteneurs :
+   ```bash
+   docker-compose up -d
+
+
+3. Créez et génerer la base de donnée :
+   ```bash
+   docker exec -it php_collab bash
+   php bin/console d:d:c
+   php bin/console d:m:m
+   php bin/console d:fixtures:load
 
 
 ## Troubleshooting

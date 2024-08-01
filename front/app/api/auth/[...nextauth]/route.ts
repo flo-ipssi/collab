@@ -1,4 +1,5 @@
 import NextAuth from "next-auth/next";
+import axios from "axios";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const handler = NextAuth({
@@ -23,8 +24,8 @@ const handler = NextAuth({
           password: {},
         },
         async authorize(credentials, req) {
-          const res = await axios.post<LoginResponse>(
-            process.env.API_BASE_URL + "api/v1/auth/login",
+          const res = await axios.post(
+            process.env.API_BASE_URL + "api/authentication_token",
             credentials,
             {
               headers: {
