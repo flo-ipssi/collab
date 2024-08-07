@@ -15,9 +15,7 @@ security:
             stateless: true
             provider: app_user_provider
             jwt: ~
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+       
         main:
             lazy: true
             provider: app_user_provider
@@ -42,8 +40,10 @@ security:
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/users, roles: ROLE_USER }
-        - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/users, roles: ROLE_USER }
+        # - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
+        # - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        # - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
