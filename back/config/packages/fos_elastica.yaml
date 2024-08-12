@@ -3,7 +3,28 @@ fos_elastica:
     default: { host: '%env(ELASTICSEARCH_HOST)%', port: '%env(ELASTICSEARCH_PORT)%' }
   indexes:
     user:
-      finder: ~
+      persistence:
+        finder: ~
+        driver: orm
+        provider: ~
+        model: App\Entity\User
       properties:
-        name: ~
-        location: { type: geo_point }
+        username:
+          type: text
+        profile:
+          type: object
+          properties:
+            bio:
+              type: text
+        userskill:
+          type: object
+          properties:
+            skill_id:
+              type: object
+              properties:
+                name:
+                  type: text
+                description:
+                  type: text
+
+    

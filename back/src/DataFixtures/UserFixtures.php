@@ -3,16 +3,20 @@
 // src/DataFixtures/UserFixtures.php
 namespace App\DataFixtures;
 
+use App\Entity\Equipment;
 use App\Entity\Profile;
+use App\Entity\Skill;
 use App\Entity\User;
+use App\Entity\UserEquipment;
+use App\Entity\UserSkill;
 use Faker;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-
 
     public function __construct(private UserPasswordHasherInterface $passwordHasher)
     {
@@ -22,6 +26,12 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Faker\Factory::create('fr_FR');
+
+        
+        // Récupérer tous les Skills et Equipments existants
+        $skills = $manager->getRepository(Skill::class)->findAll();
+        $equipments = $manager->getRepository(Equipment::class)->findAll();
+        
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
             $user->setEmail("user$i@collab.com");
@@ -33,7 +43,6 @@ class UserFixtures extends Fixture
             $user->setCity($faker->city);
             $user->setZipCode($faker->countryCode);
 
-            // Création du profil associé
             $profile = new Profile();
             $profile->setUserId($user);
             $profile->setBio("test bio");
@@ -41,8 +50,33 @@ class UserFixtures extends Fixture
 
             $manager->persist($user);
             $manager->persist($profile);
+
+            
+            for ($j = 0; $j < rand(1, 3); $j++) {
+                $userSkill = new UserSkill();
+                $userSkill->setUserId($user);
+                $userSkill->setSkillId($skills[array_rand($skills)]);
+                $manager->persist($userSkill);
+            }
+
+            for ($k = 0; $k < rand(1, 2); $k++) {
+                $userEquipment = new UserEquipment();
+                $userEquipment->setUserId($user);
+                $userEquipment->setUserEquipment($equipments[array_rand($equipments)]);
+                $userEquipment->setDetails($faker->word(6));
+                $manager->persist($userEquipment);
+            }
         }
 
         $manager->flush();
+    }
+
+    
+    public function getDependencies()
+    {
+        return [
+            SkillFixtures::class,
+            EquipmentFixtures::class,
+        ];
     }
 }

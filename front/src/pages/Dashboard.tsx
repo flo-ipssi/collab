@@ -8,7 +8,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 
 const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [genreMenuOpen, setGenreMenuOpen] = React.useState(false);
   const [popularityMenuOpen, setPopularityMenuOpen] = React.useState(false);
 
@@ -126,6 +126,52 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="grid gap-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <img src="https://static01.nyt.com/images/2024/04/30/multimedia/30tony-nominations-alicia-keys-fkbz/30tony-nominations-alicia-keys-fkbz-mediumSquareAt3X.jpg" alt="Artiste" className="w-10 h-10 rounded-full" />
+                <div>
+                  <div className="font-medium">Alicia Kheys</div>
+                  <div className="text-gray-500 text-sm">a publié il y a 2h</div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p>Nouvelle sortie de mon dernier album, n'hésitez pas à l'écouter !</p>
+                <div className="mt-4 flex gap-2">
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <FavoriteBorderIcon className="w-4 h-4 mr-2" /> J'aime
+                  </button>
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <CommentIcon className="w-4 h-4 mr-2" /> Commenter
+                  </button>
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <ShareIcon className="w-4 h-4 mr-2" /> Partager
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex items-center gap-4">
+                <img src="https://static01.nyt.com/images/2024/04/30/multimedia/30tony-nominations-alicia-keys-fkbz/30tony-nominations-alicia-keys-fkbz-mediumSquareAt3X.jpg" alt="Artiste" className="w-10 h-10 rounded-full" />
+                <div>
+                  <div className="font-medium">Alicia Kheys</div>
+                  <div className="text-gray-500 text-sm">a publié il y a 2h</div>
+                </div>
+              </div>
+              <div className="mt-4">
+                <p>Nouvelle sortie de mon dernier album, n'hésitez pas à l'écouter !</p>
+                <div className="mt-4 flex gap-2">
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <FavoriteBorderIcon className="w-4 h-4 mr-2" /> J'aime
+                  </button>
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <CommentIcon className="w-4 h-4 mr-2" /> Commenter
+                  </button>
+                  <button className="border border-gray-300 rounded-md px-4 py-2 text-sm flex items-center">
+                    <ShareIcon className="w-4 h-4 mr-2" /> Partager
+                  </button>
+                </div>
+              </div>
+            </div>
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center gap-4">
                 <img src="https://static01.nyt.com/images/2024/04/30/multimedia/30tony-nominations-alicia-keys-fkbz/30tony-nominations-alicia-keys-fkbz-mediumSquareAt3X.jpg" alt="Artiste" className="w-10 h-10 rounded-full" />

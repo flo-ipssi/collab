@@ -73,6 +73,9 @@
             "ref": "46c9cd2c1e07f0fcfd97e96f12b03b2e0845c4cd"
         }
     },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v6.4.0"
+    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.21",
         "recipe": {
@@ -209,6 +212,19 @@
         "files": [
             "./config/packages/security.yaml",
             "./config/routes/security.yaml"
+        ]
+    },
+    "symfony/translation": {
+        "version": "6.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.3",
+            "ref": "e28e27f53663cc34f0be2837aba18e3a1bef8e7b"
+        },
+        "files": [
+            "./config/packages/translation.yaml",
+            "./translations/.gitignore"
         ]
     },
     "symfony/twig-bundle": {

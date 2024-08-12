@@ -52,17 +52,26 @@ services:
     networks:
       - collab_net
 
-  # elasticsearch:
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
-  #   environment:
-  #     - discovery.type=single-node
-  #   ports:
-  #     - "9200:9200"
-  #   volumes:
-  #     - es_data:/usr/share/elasticsearch/data
-  #   networks:
-  #     - collab_net
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    container_name: elasticsearch_collab
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    networks:
+      - collab_net
 
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.0.1
+    links:
+      - elasticsearch
+    ports:
+      - 5601:5601
+      
   front:
     build:
       context: ./front
