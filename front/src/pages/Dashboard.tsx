@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../AuthContext';
+// import { useAuth } from '../AuthContext';
 // import { Link } from 'react-router-dom';
 import CommentIcon from '@material-ui/icons/Comment';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
@@ -8,7 +8,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [genreMenuOpen, setGenreMenuOpen] = React.useState(false);
   const [popularityMenuOpen, setPopularityMenuOpen] = React.useState(false);
 

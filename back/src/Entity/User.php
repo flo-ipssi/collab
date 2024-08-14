@@ -54,15 +54,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank]
     private ?string $username = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255)]
     private ?string $zip_code = null;
 
+    #[Groups(['user:read'])]
     #[ORM\OneToOne(mappedBy: 'user_id', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 

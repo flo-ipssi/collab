@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProfileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
@@ -17,6 +18,7 @@ class Profile
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?User $user_id = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 

@@ -11,6 +11,12 @@ fos_elastica:
       properties:
         username:
           type: text
+        country:
+          type: text
+        city:
+          type: text
+        zip_code:
+          type: text
         profile:
           type: object
           properties:

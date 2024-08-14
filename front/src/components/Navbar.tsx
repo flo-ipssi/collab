@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import logo from "../assets/logo.png";
 const Navbar: React.FC = () => {
-    const { token, logout, user } = useAuth();
+    const { token, logout } = useAuth();
 
     return (
         <header className="px-10 lg:px-6 h-20 flex items-center bg-transparent border-b-2 border-b-white">

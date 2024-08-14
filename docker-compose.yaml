@@ -1,4 +1,4 @@
-version: "3.8"
+# version: "3.8"
 
 services:
   php:
@@ -66,11 +66,13 @@ services:
       - collab_net
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:6.0.1
-    links:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    depends_on:
       - elasticsearch
     ports:
       - 5601:5601
+    networks:
+      - collab_net
       
   front:
     build:
@@ -80,7 +82,7 @@ services:
     volumes:
       - ./front:/app
     # command: ["sh", "-c", "npm run build && npm start"]
-    command: ["sh", "-c", "npm run build && npm run dev"]
+    command: ["sh", "-c", " npm run dev"]
     ports:
       - "3000:3000"
     depends_on:

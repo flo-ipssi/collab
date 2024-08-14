@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Navbar from './Navbar';
 
 interface AuthProviderProps {
     children: React.ReactNode;
