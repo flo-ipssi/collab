@@ -1,30 +1,26 @@
-import React from 'react'
+import { Button } from '@mui/material'
+import { FormDataArrayKeys } from '../../@type/forms';
 
 interface MultiSelectProps {
-  items: string[]
-  category: string
-  selectedItems: string[]
-  onSelect: (category: string, item: string) => void
-  className?: string
+  items: string[];
+  category: FormDataArrayKeys;
+  selectedItems: string[];
+  onItemSelect: (category: FormDataArrayKeys, item: string) => void;
 }
 
-const MultiSelect: React.FC<MultiSelectProps> = ({ items, category, selectedItems, onSelect, className = '' }) => {
+export default function MultiSelect({ items, category, selectedItems, onItemSelect }: MultiSelectProps) {
   return (
-    <div className={`flex flex-wrap gap-2 ${className}`}>
+    <div className="flex flex-wrap gap-2">
       {items.map(item => (
-        <button
+        <Button
           key={item}
-          type="button"
-          onClick={() => onSelect(category, item)}
-          className={`px-4 py-2 rounded-full border ${
-            selectedItems.includes(item) ? "bg-blue-500 text-white" : "bg-white text-black"
-          }`}
+          variant={selectedItems.includes(item) ? "contained" : "outlined"}
+          onClick={() => onItemSelect(category, item)}
+          className="rounded-full"
         >
           {item}
-        </button>
+        </Button>
       ))}
     </div>
   )
 }
-
-export default MultiSelect
