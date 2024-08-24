@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +20,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     normalizationContext: ['groups' => ['user:read']],
-    denormalizationContext: ['groups' => ['user:write']],
+    denormalizationContext: ['groups' => ['user:write', 'user:put']],
+    operations: [
+        new Put(
+            security: "is_granted('ROLE_USER') and object == user",
+        ),
+        new Patch(
+            security: "is_granted('ROLE_USER') and object == user"
+        )
+    ]
 )]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['username'], message: 'It looks like another dragon took your username. ROAR!')]
@@ -28,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    
+
 
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 180)]
@@ -49,8 +59,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Groups(['user:read', 'user:write'])]
-    #[ORM\Column(length: 255, unique:true)]
+    #[Groups(['user:read', 'user:write', 'user:put'])]
+    #[ORM\Column(length: 255, unique: true)]
     #[Assert\NotBlank]
     private ?string $username = null;
 
