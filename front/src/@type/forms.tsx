@@ -21,3 +21,22 @@ export interface FormData {
 }
 
 export type FormDataArrayKeys = 'activities' | 'materials' | 'softwares' | 'skills';
+
+export interface DataUser {
+    username: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    website: string;
+    profile: {
+        avatar?: string | File;
+        bio: string;
+        facebook: string;
+        instagram: string;
+        twitter: string;
+        spotify: string;
+        deezer: string;
+        appleMusic: string;
+        website: string;
+    };
+}

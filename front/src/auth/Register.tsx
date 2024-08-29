@@ -68,8 +68,11 @@ const Register: React.FC = () => {
 
   return (
     <div className='flex '>
-      <div className="flex-auto w-60 min-h-screen 
+      {/* <div className="flex-auto w-60 min-h-screen 
       bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex items-center 
+      justify-center p-20"> */}
+      <div className="flex-auto w-60 min-h-screen 
+      bg-gradient-to-r from-slate-400 via-neutral-500 to-slate-600 flex items-center 
       justify-center p-20">
         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-4xl">
           <StepProgressBar step={step} totalSteps={6} />

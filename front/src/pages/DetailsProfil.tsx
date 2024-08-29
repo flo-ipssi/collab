@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 interface Props { }
 
-const Profile: FC<Props> = ({}) => {
+const DetailsProfil: FC<Props> = ({}) => {
   return (
     <div className="w-full text-white mx-auto ">
       <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden ">
@@ -351,4 +351,4 @@ function YoutubeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
-export default Profile;
+export default DetailsProfil;

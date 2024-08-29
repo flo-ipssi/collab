@@ -6,7 +6,7 @@ const Navbar: React.FC = () => {
     const { token, logout } = useAuth();
 
     return (
-        <header className="px-10 lg:px-6 h-20 flex items-center bg-transparent border-b-2 border-b-white">
+        <header className="absolute w-full px-10 lg:px-6 h-20 flex items-center bg-transparent border-b-2 border-b-white">
             <Link
                 to={"/"}
                 className="flex h-20 px-4 items-center justify-center bg-white"
