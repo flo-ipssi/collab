@@ -1,23 +1,44 @@
 
+
+export interface Country {
+    label: string;
+    value: string;
+}
+
+export interface City {
+    label: string;
+    value: string;
+}
+export interface Profession {
+    id: number,
+    name: string;
+    value: string;
+}
 export interface FormData {
     email: string;
     name: string;
     firstname: string;
+    lastname: string;
     username: string;
     photo: File | null;
-    city: string;
-    biography: string;
-    activities: string[];
+    city: City | null;
+    country: Country | null;
+    postalCode: string;
+    professions: Profession[];
     materials: string[];
     softwares: string[];
     skills: string[];
-    twitter: string;
-    instagram: string;
-    facebook: string;
-    deezer: string;
-    spotify: string;
-    tidal: string;
-    otherPlatforms: string;
+    profile: {
+        avatar?: string | File;
+        bio: string;
+        twitter: string;
+        instagram: string;
+        facebook: string;
+        deezer: string;
+        spotify: string;
+        tidal: string;
+        otherPlatforms: string;
+    };
 }
 
 export type FormDataArrayKeys = 'activities' | 'materials' | 'softwares' | 'skills';

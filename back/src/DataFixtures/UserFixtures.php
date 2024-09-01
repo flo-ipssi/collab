@@ -4,16 +4,18 @@
 namespace App\DataFixtures;
 
 use App\Entity\Equipment;
+use App\Entity\Profession;
 use App\Entity\Profile;
 use App\Entity\Skill;
 use App\Entity\User;
 use App\Entity\UserEquipment;
+use App\Entity\UserProfession;
 use App\Entity\UserSkill;
-use Faker;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Faker;
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -27,10 +29,10 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Faker\Factory::create('fr_FR');
 
-        
-        // Récupérer tous les Skills et Equipments existants
+        // Skills, Equipments and Professions existed
         $skills = $manager->getRepository(Skill::class)->findAll();
         $equipments = $manager->getRepository(Equipment::class)->findAll();
+        $professions = $manager->getRepository(Profession::class)->findAll();
         
         for ($i = 0; $i < 10; $i++) {
             $user = new User();
@@ -66,6 +68,13 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 $userEquipment->setDetails($faker->word(6));
                 $manager->persist($userEquipment);
             }
+            
+            for ($l = 0; $l < rand(1, 2); $l++) {
+                $userProfession = new UserProfession();
+                $userProfession->setUser($user);
+                $userProfession->setProfession($professions[array_rand($professions)]);
+                $manager->persist($userProfession);
+            }
         }
 
         $manager->flush();
@@ -77,6 +86,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         return [
             SkillFixtures::class,
             EquipmentFixtures::class,
+            ProfessionFixtures::class,
         ];
     }
 }

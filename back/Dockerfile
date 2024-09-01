@@ -1,11 +1,21 @@
 FROM php:8.1-fpm
 
-# Install the MySQL extension
-RUN docker-php-ext-install pdo pdo_mysql
+# Dependencies
+RUN apt-get update && apt-get install -y \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd pdo_mysql zip
 
-# Install any other dependencies your PHP application requires
-# RUN apt-get update && apt-get install -y libicu-dev libpq-dev git unzip
-# RUN docker-php-ext-install intl opcache
+COPY . /var/www
+
 WORKDIR /var/www
-COPY . .
-RUN docker-php-ext-install pdo pdo_mysql
+
+# Composer
+# RUN composer install --no-dev --optimize-autoloader
+
+CMD ["php-fpm"]

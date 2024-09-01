@@ -10,6 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 #[ApiResource(
+    normalizationContext: ['groups' => ['user:read']],
+    denormalizationContext: ['groups' => ['user:write', 'user:put']],
     operations: [
        
     ]
@@ -22,7 +24,7 @@ class Profile
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -38,12 +40,12 @@ class Profile
 
     public function getUserId(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user_id): static
+    public function setUserId(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }

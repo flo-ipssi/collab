@@ -2,17 +2,14 @@
 
 services:
   php:
-    image: php:8.1-fpm
+    build:
+      context: ./back
+      dockerfile: Dockerfile
     container_name: php_collab
     volumes:
       - ./back:/var/www
     depends_on:
       - db
-    environment:
-      - PHP_EXTENSION_INSTALL=php-mysql
-    build:
-      context: ./back
-      dockerfile: Dockerfile
     networks:
       - collab_net
 

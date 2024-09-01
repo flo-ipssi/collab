@@ -25,9 +25,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex  flex-col items-center bg-slate-300 h-screen justify-center  bg-cover bg-center bg-no-repeat">
-      <div className="mx-4 my-20 w-full max-w-md rounded-lg bg-background p-6 shadow-lg sm:mx-0">
-        <div className="space-y-4">
+    <div className="flex bg-white flex-col items-center  h-screen justify-center  bg-cover bg-center bg-no-repeat">
+      <div className="mx-4 my-20 w-full bg-slate-300 max-w-md rounded-lg bg-background p-6 shadow-lg sm:mx-0">
+        <div className="space-y-4 ">
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Welcome Back

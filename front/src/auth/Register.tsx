@@ -1,12 +1,17 @@
-import { useState } from 'react'
-import { Button, TextField, TextareaAutosize } from '@mui/material'
-import { Person, MusicNote, Link, Description } from '@mui/icons-material'
+import { useEffect, useState } from 'react'
+import { Button, Checkbox, TextField, TextareaAutosize } from '@mui/material'
+import { Person, MusicNote, Link, Description, MusicNoteRounded } from '@mui/icons-material'
 import StepProgressBar from '../components/form/StepProgressBar'
 import FormSectionHeader from '../components/form/FormSectionHeader'
 import MultiSelect from '../components/form/MultiSelect'
-import { FormData, FormDataArrayKeys } from '../@type/forms'
+import { City, Country, FormData, FormDataArrayKeys, Profession } from '../@type/forms'
 import cover from "../assets/bg.png";
 import ImageUploadForm from '../components/form/ImageUploadForm'
+import Autocomplete from '@mui/material/Autocomplete';
+import axios from 'axios'
+
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 const Register: React.FC = () => {
   const [step, setStep] = useState<number>(1)
@@ -14,24 +19,29 @@ const Register: React.FC = () => {
     email: '',
     name: '',
     firstname: '',
+    lastname: '',
     username: '',
     photo: null,
-    city: '',
-    biography: '',
-    activities: [],
+    city: null,
+    country: null,
+    postalCode: '',
+    professions: [],
     materials: [],
     softwares: [],
     skills: [],
-    twitter: '',
-    instagram: '',
-    facebook: '',
-    deezer: '',
-    spotify: '',
-    tidal: '',
-    otherPlatforms: ''
+    profile: {
+      bio: '',
+      twitter: '',
+      instagram: '',
+      facebook: '',
+      deezer: '',
+      spotify: '',
+      tidal: '',
+      otherPlatforms: ''
+    }
   });
-  const [preview, setPreview] = useState<string >('')
-  
+  const [preview, setPreview] = useState<string>('')
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -40,11 +50,11 @@ const Register: React.FC = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          setPreview(reader.result as string)
-        }
-        reader.readAsDataURL(file)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setPreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
     setFormData(prev => ({ ...prev, photo: file || null }))
   }
@@ -58,6 +68,67 @@ const Register: React.FC = () => {
     }));
   };
 
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [professions, setProfessions] = useState<Profession[]>([]);
+
+  // Retrieve Countries
+  useEffect(() => {
+    axios.get('https://countriesnow.space/api/v0.1/countries/')
+      .then((response) => {
+        const countryList: Country[] = response.data.data.map((country: { country: string }) => ({
+          label: country.country,
+          value: country.country,
+        }));
+        setCountries(countryList);
+      })
+      .catch((error) => console.error('Error fetching countries:', error));
+  }, []);
+
+  // If country selected, we retrieve cities
+  useEffect(() => {
+    if (formData.country) {
+      axios.post('https://countriesnow.space/api/v0.1/countries/cities', { country: formData.country.value })
+        .then((response) => {
+          const cityList: City[] = response.data.data.map((city: string) => ({
+            label: city,
+            value: city,
+          }));
+          console.log(cityList);
+
+          setCities(cityList);
+        })
+        .catch((error) => console.error('Error fetching cities:', error));
+    }
+  }, [formData.country]);
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/professions')
+      .then((response) => {
+        const professionList: Profession[] = response.data.map((profession: { id: number, name: string }) => ({
+          name: profession.name,
+          value: profession.id,
+        }));
+        console.log(professionList);
+
+        setProfessions(professionList);
+      })
+      .catch((error) => console.error('Error fetching professions:', error));
+
+  }, [])
+
+
+  const handleAutocompleteChange = (
+    event: React.SyntheticEvent,
+    value: Country | City | Profession | null,
+    name: keyof FormData
+  ) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
   const nextStep = () => setStep(prev => Math.min(prev + 1, 6))
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1))
 
@@ -65,12 +136,11 @@ const Register: React.FC = () => {
   const materials = ["Microphone", "Audio Interface", "MIDI Controller", "Speakers"]
   const softwares = ["Ableton Live", "FL Studio", "Logic Pro", "Pro Tools"]
   const skills = ["Composition", "Mixing", "Mastering", "Sound Design"]
+  const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+  const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
   return (
     <div className='flex '>
-      {/* <div className="flex-auto w-60 min-h-screen 
-      bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 flex items-center 
-      justify-center p-20"> */}
       <div className="flex-auto w-60 min-h-screen 
       bg-gradient-to-r from-slate-400 via-neutral-500 to-slate-600 flex items-center 
       justify-center p-20">
@@ -81,6 +151,17 @@ const Register: React.FC = () => {
             {step === 1 && (
               <div className="space-y-4">
                 <FormSectionHeader icon={Person} title="Basic Information" />
+
+                <TextField
+                  label="Pseudo (visible opur les autres utilisateurs)"
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  fullWidth
+                  required
+                />
                 <TextField
                   label="Email"
                   type="email"
@@ -92,31 +173,21 @@ const Register: React.FC = () => {
                   required
                 />
                 <TextField
-                  label="Name"
+                  label="Nom"
                   type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                  id="lastname"
+                  name="lastname"
+                  value={formData.lastname}
                   onChange={handleInputChange}
                   fullWidth
                   required
                 />
                 <TextField
-                  label="First Name"
+                  label="Prénom"
                   type="text"
                   id="firstname"
                   name="firstname"
                   value={formData.firstname}
-                  onChange={handleInputChange}
-                  fullWidth
-                  required
-                />
-                <TextField
-                  label="Username"
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
                   onChange={handleInputChange}
                   fullWidth
                   required
@@ -126,35 +197,81 @@ const Register: React.FC = () => {
 
             {step === 2 && (
               <div className="space-y-4">
-                <FormSectionHeader icon={MusicNote} title="Musical Profile" />
+                <FormSectionHeader icon={MusicNote} title="Profile" />
                 <ImageUploadForm handleFileChange={handleFileChange} preview={preview} />
-                <TextField
-                  label="City"
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  fullWidth
+                <Autocomplete
+                  options={countries}
+                  getOptionLabel={(option) => option.label}
+                  value={formData.country}
+                  onChange={(event, value) => {
+                    handleAutocompleteChange(event, value, 'country')
+                    handleInputChange
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Country"
+                      variant="outlined"
+                      fullWidth
+                    />
+                  )}
                 />
-                <TextareaAutosize
-                  minRows={4}
-                  id="biography"
-                  name="biography"
-                  value={formData.biography}
-                  onChange={handleInputChange}
-                  placeholder="Biography"
-                  className="w-full p-2 border border-gray-300 rounded"
+                {formData.country && cities.length > 0 ?
+                  <Autocomplete
+                    options={cities}
+                    getOptionLabel={(option) => option.label}
+                    value={formData.city}
+                    onChange={(event, value) => {
+                      handleAutocompleteChange(event, value, 'city')
+                      handleInputChange
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="City"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    )}
+                    disabled={!formData.country}
+                  />
+                  : null}
+
+
+                <Autocomplete
+                  multiple
+                  id="checkboxes-tags-demo"
+                  options={professions}
+                  disableCloseOnSelect
+                  getOptionLabel={(option) => option.name}
+                  renderOption={(props, option, { selected }) => {
+                    const { key, ...optionProps } = props;
+                    return (
+                      <li key={key} {...optionProps}>
+                        <Checkbox
+                          icon={icon}
+                          checkedIcon={checkedIcon}
+                          style={{ marginRight: 8 }}
+                          checked={selected}
+                        />
+                        {option.name}
+                      </li>
+                    );
+                  }}
+                  style={{ width: 500 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Checkboxes" placeholder="Favorites" />
+                  )}
                 />
               </div>
             )}
 
             {step === 3 && (
               <div className="space-y-4">
-                <FormSectionHeader icon={MusicNote} title="Musical Profile" />
+                <FormSectionHeader icon={MusicNoteRounded} title="ACTIVIT2" />
                 <div>
                   <label>Musical Activities</label>
-                  <MultiSelect items={activities} category="activities" selectedItems={formData.activities} onItemSelect={handleMultiSelect} />
+                  {/* <MultiSelect items={activities} category="activities" selectedItems={formData.activities} onItemSelect={handleMultiSelect} /> */}
                 </div>
                 <div>
                   <label>Musical Equipment</label>
@@ -173,6 +290,16 @@ const Register: React.FC = () => {
                   <label>Skills</label>
                   <MultiSelect items={skills} category="skills" selectedItems={formData.skills} onItemSelect={handleMultiSelect} />
                 </div>
+
+                <TextareaAutosize
+                  minRows={4}
+                  id="biography"
+                  name="biography"
+                  value={formData.profile.bio}
+                  onChange={handleInputChange}
+                  placeholder="Biography"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
               </div>
             )}
             {step === 5 && (
@@ -183,7 +310,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="twitter"
                   name="twitter"
-                  value={formData.twitter}
+                  value={formData.profile.twitter}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -192,7 +319,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="instagram"
                   name="instagram"
-                  value={formData.instagram}
+                  value={formData.profile.instagram}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -201,7 +328,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="facebook"
                   name="facebook"
-                  value={formData.facebook}
+                  value={formData.profile.facebook}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -210,7 +337,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="deezer"
                   name="deezer"
-                  value={formData.deezer}
+                  value={formData.profile.deezer}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -219,7 +346,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="spotify"
                   name="spotify"
-                  value={formData.spotify}
+                  value={formData.profile.spotify}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -228,7 +355,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="tidal"
                   name="tidal"
-                  value={formData.tidal}
+                  value={formData.profile.tidal}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -237,7 +364,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="otherPlatforms"
                   name="otherPlatforms"
-                  value={formData.otherPlatforms}
+                  value={formData.profile.otherPlatforms}
                   onChange={handleInputChange}
                   fullWidth
                 />

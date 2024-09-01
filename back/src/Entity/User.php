@@ -77,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $zip_code = null;
 
     #[Groups(['user:read'])]
-    #[ORM\OneToOne(mappedBy: 'user_id', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
     /**
@@ -98,11 +98,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user_id', orphanRemoval: true)]
     private Collection $notifications;
 
+    /**
+     * @var Collection<int, UserProfession>
+     */
+    #[ORM\OneToMany(targetEntity: UserProfession::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $userProfessions;
+
     public function __construct()
     {
         $this->UserSkill = new ArrayCollection();
         $this->userEquipment = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->userProfessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -333,6 +340,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($notification->getUserId() === $this) {
                 $notification->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserProfession>
+     */
+    public function getUserProfessions(): Collection
+    {
+        return $this->userProfessions;
+    }
+
+    public function addUserProfession(UserProfession $userProfession): static
+    {
+        if (!$this->userProfessions->contains($userProfession)) {
+            $this->userProfessions->add($userProfession);
+            $userProfession->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserProfession(UserProfession $userProfession): static
+    {
+        if ($this->userProfessions->removeElement($userProfession)) {
+            // set the owning side to null (unless already changed)
+            if ($userProfession->getUser() === $this) {
+                $userProfession->setUser(null);
             }
         }
 
