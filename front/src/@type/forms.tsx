@@ -1,5 +1,18 @@
 
 
+export interface Equipment {
+    type: string;
+    brand: string;
+    model: string;
+}
+
+export interface EquipmentCategory {
+    id: number;
+    name: string;
+    description: string;
+    equipment: Equipment[];
+}
+
 export interface Country {
     label: string;
     value: string;

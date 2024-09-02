@@ -266,14 +266,10 @@ const Register: React.FC = () => {
               <div className="space-y-4">
                 <FormSectionHeader icon={MusicNoteRounded} title="ACTIVITES" />
                 <EquipmentSelector />
-                <div>
-                  <label>Musical Activities</label>
-                  {/* <MultiSelect items={activities} category="activities" selectedItems={formData.activities} onItemSelect={handleMultiSelect} /> */}
-                </div>
-                <div>
+                {/* <div>
                   <label>Musical Equipment</label>
                   <MultiSelect items={materials} category="materials" selectedItems={formData.materials} onItemSelect={handleMultiSelect} />
-                </div>
+                </div> */}
               </div>
             )}
             {step === 4 && (
