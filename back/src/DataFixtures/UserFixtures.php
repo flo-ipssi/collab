@@ -3,14 +3,12 @@
 // src/DataFixtures/UserFixtures.php
 namespace App\DataFixtures;
 
-use App\Entity\Equipment;
+use App\Entity\Material;
 use App\Entity\Profession;
 use App\Entity\Profile;
-use App\Entity\Skill;
 use App\Entity\User;
-use App\Entity\UserEquipment;
+use App\Entity\UserMaterial;
 use App\Entity\UserProfession;
-use App\Entity\UserSkill;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -29,9 +27,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Faker\Factory::create('fr_FR');
 
-        // Skills, Equipments and Professions existed
-        $skills = $manager->getRepository(Skill::class)->findAll();
-        $equipments = $manager->getRepository(Equipment::class)->findAll();
+        // Materials and Professions existed
+        $materials = $manager->getRepository(Material::class)->findAll();
         $professions = $manager->getRepository(Profession::class)->findAll();
         
         for ($i = 0; $i < 10; $i++) {
@@ -53,20 +50,12 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($user);
             $manager->persist($profile);
 
-            
-            for ($j = 0; $j < rand(1, 3); $j++) {
-                $userSkill = new UserSkill();
-                $userSkill->setUserId($user);
-                $userSkill->setSkillId($skills[array_rand($skills)]);
-                $manager->persist($userSkill);
-            }
-
             for ($k = 0; $k < rand(1, 2); $k++) {
-                $userEquipment = new UserEquipment();
-                $userEquipment->setUserId($user);
-                $userEquipment->setUserEquipment($equipments[array_rand($equipments)]);
-                $userEquipment->setDetails($faker->word(6));
-                $manager->persist($userEquipment);
+                $userMaterial = new UserMaterial();
+                $userMaterial->setUserId($user);
+                $userMaterial->setUserMaterial($materials[array_rand($materials)]);
+                $userMaterial->setDetails($faker->word(6));
+                $manager->persist($userMaterial);
             }
             
             for ($l = 0; $l < rand(1, 2); $l++) {
@@ -84,8 +73,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            SkillFixtures::class,
-            EquipmentFixtures::class,
+            MaterialFixtures::class,
             ProfessionFixtures::class,
         ];
     }

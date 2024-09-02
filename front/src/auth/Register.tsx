@@ -12,6 +12,7 @@ import axios from 'axios'
 
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import EquipmentSelector from '../components/EquipmentSelector'
 
 const Register: React.FC = () => {
   const [step, setStep] = useState<number>(1)
@@ -61,10 +62,10 @@ const Register: React.FC = () => {
 
   const handleMultiSelect = (category: FormDataArrayKeys, item: string) => {
     setFormData(prev => ({
-      ...prev,
-      [category]: prev[category].includes(item)
-        ? prev[category].filter(i => i !== item)
-        : [...prev[category], item]
+      // ...prev,
+      // [category]: prev[category].includes(item)
+      //   ? prev[category].filter(i => i !== item)
+      //   : [...prev[category], item]
     }));
   };
 
@@ -217,58 +218,54 @@ const Register: React.FC = () => {
                   )}
                 />
                 {formData.country && cities.length > 0 ?
-                  <Autocomplete
-                    options={cities}
-                    getOptionLabel={(option) => option.label}
-                    value={formData.city}
-                    onChange={(event, value) => {
-                      handleAutocompleteChange(event, value, 'city')
-                      handleInputChange
-                    }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="City"
-                        variant="outlined"
-                        fullWidth
-                      />
-                    )}
-                    disabled={!formData.country}
-                  />
+                  <>
+                    <Autocomplete
+                      options={cities}
+                      getOptionLabel={(option) => option.label}
+                      value={formData.city}
+                      onChange={(event, value) => {
+                        handleAutocompleteChange(event, value, 'city')
+                        handleInputChange
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="City"
+                          variant="outlined"
+                          fullWidth />
+                      )}
+                      disabled={!formData.country} /><Autocomplete
+                      multiple
+                      id="checkboxes-professions"
+                      options={professions}
+                      disableCloseOnSelect
+                      getOptionLabel={(option) => option.name}
+                      renderOption={(props, option, { selected }) => {
+                        const { key, ...optionProps } = props
+                        return (
+                          <li key={key} {...optionProps}>
+                            <Checkbox
+                              icon={icon}
+                              checkedIcon={checkedIcon}
+                              style={{ marginRight: 8 }}
+                              checked={selected} />
+                            {option.name}
+                          </li>
+                        )
+                      }}
+                      style={{}}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Professions" />
+                      )} />
+                  </>
                   : null}
-
-
-                <Autocomplete
-                  multiple
-                  id="checkboxes-tags-demo"
-                  options={professions}
-                  disableCloseOnSelect
-                  getOptionLabel={(option) => option.name}
-                  renderOption={(props, option, { selected }) => {
-                    const { key, ...optionProps } = props;
-                    return (
-                      <li key={key} {...optionProps}>
-                        <Checkbox
-                          icon={icon}
-                          checkedIcon={checkedIcon}
-                          style={{ marginRight: 8 }}
-                          checked={selected}
-                        />
-                        {option.name}
-                      </li>
-                    );
-                  }}
-                  style={{ width: 500 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Checkboxes" placeholder="Favorites" />
-                  )}
-                />
               </div>
             )}
 
             {step === 3 && (
               <div className="space-y-4">
-                <FormSectionHeader icon={MusicNoteRounded} title="ACTIVIT2" />
+                <FormSectionHeader icon={MusicNoteRounded} title="ACTIVITES" />
+                <EquipmentSelector />
                 <div>
                   <label>Musical Activities</label>
                   {/* <MultiSelect items={activities} category="activities" selectedItems={formData.activities} onItemSelect={handleMultiSelect} /> */}

@@ -80,17 +80,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
-    /**
-     * @var Collection<int, UserSkill>
-     */
-    #[ORM\OneToMany(targetEntity: UserSkill::class, mappedBy: 'user_id', orphanRemoval: true)]
-    private Collection $UserSkill;
 
     /**
-     * @var Collection<int, UserEquipment>
+     * @var Collection<int, UserMaterial>
      */
-    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_id', orphanRemoval: true)]
-    private Collection $userEquipment;
+    #[ORM\OneToMany(targetEntity: UserMaterial::class, mappedBy: 'user_id', orphanRemoval: true)]
+    private Collection $userMaterial;
 
     /**
      * @var Collection<int, Notification>
@@ -106,8 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->UserSkill = new ArrayCollection();
-        $this->userEquipment = new ArrayCollection();
+        $this->userMaterial = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->userProfessions = new ArrayCollection();
     }
@@ -257,59 +251,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, UserSkill>
+     * @return Collection<int, UserMaterial>
      */
-    public function getUserSkill(): Collection
+    public function getUserMaterial(): Collection
     {
-        return $this->UserSkill;
+        return $this->userMaterial;
     }
 
-    public function addUserSkill(UserSkill $userSkill): static
+    public function addUserMaterial(UserMaterial $userMaterial): static
     {
-        if (!$this->UserSkill->contains($userSkill)) {
-            $this->UserSkill->add($userSkill);
-            $userSkill->setUserId($this);
+        if (!$this->userMaterial->contains($userMaterial)) {
+            $this->userMaterial->add($userMaterial);
+            $userMaterial->setUserId($this);
         }
 
         return $this;
     }
 
-    public function removeUserSkill(UserSkill $userSkill): static
+    public function removeUserMaterial(UserMaterial $userMaterial): static
     {
-        if ($this->UserSkill->removeElement($userSkill)) {
+        if ($this->userMaterial->removeElement($userMaterial)) {
             // set the owning side to null (unless already changed)
-            if ($userSkill->getUserId() === $this) {
-                $userSkill->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, UserEquipment>
-     */
-    public function getUserEquipment(): Collection
-    {
-        return $this->userEquipment;
-    }
-
-    public function addUserEquipment(UserEquipment $userEquipment): static
-    {
-        if (!$this->userEquipment->contains($userEquipment)) {
-            $this->userEquipment->add($userEquipment);
-            $userEquipment->setUserId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserEquipment(UserEquipment $userEquipment): static
-    {
-        if ($this->userEquipment->removeElement($userEquipment)) {
-            // set the owning side to null (unless already changed)
-            if ($userEquipment->getUserId() === $this) {
-                $userEquipment->setUserId(null);
+            if ($userMaterial->getUserId() === $this) {
+                $userMaterial->setUserId(null);
             }
         }
 

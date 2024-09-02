@@ -2,92 +2,79 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EquipmentRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EquipmentRepository::class)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['equipment:read']],
+    operations: [
+        new GetCollection(),
+        new Get(),
+    ]
+)]
 class Equipment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['equipment:read', 'material:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    #[Groups(['equipment:read', 'material:read'])]
+    private ?string $brand = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[ORM\Column(length: 255)]
+    #[Groups(['equipment:read', 'material:read'])]
+    private ?string $model = null;
 
-    /**
-     * @var Collection<int, UserEquipment>
-     */
-    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_equipment')]
-    private Collection $userEquipment;
-
-    public function __construct()
-    {
-        $this->userEquipment = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'equipment')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['equipment:read'])]
+    private ?Material $material = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getBrand(): ?string
     {
-        return $this->name;
+        return $this->brand;
     }
 
-    public function setName(string $name): static
+    public function setBrand(string $brand): static
     {
-        $this->name = $name;
+        $this->brand = $brand;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getModel(): ?string
     {
-        return $this->description;
+        return $this->model;
     }
 
-    public function setDescription(?string $description): static
+    public function setModel(string $model): static
     {
-        $this->description = $description;
+        $this->model = $model;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserEquipment>
-     */
-    public function getUserEquipment(): Collection
+    public function getMaterial(): ?Material
     {
-        return $this->userEquipment;
+        return $this->material;
     }
 
-    public function addUserEquipment(UserEquipment $userEquipment): static
+    public function setMaterial(?Material $material): static
     {
-        if (!$this->userEquipment->contains($userEquipment)) {
-            $this->userEquipment->add($userEquipment);
-            $userEquipment->setUserEquipment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserEquipment(UserEquipment $userEquipment): static
-    {
-        if ($this->userEquipment->removeElement($userEquipment)) {
-            // set the owning side to null (unless already changed)
-            if ($userEquipment->getUserEquipment() === $this) {
-                $userEquipment->setUserEquipment(null);
-            }
-        }
+        $this->material = $material;
 
         return $this;
     }
