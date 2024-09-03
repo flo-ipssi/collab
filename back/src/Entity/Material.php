@@ -45,10 +45,10 @@ class Material
     private ?string $description = null;
 
     /**
-     * @var Collection<int, UserMaterial>
+     * @var Collection<int, UserEquipment>
      */
-    #[ORM\OneToMany(targetEntity: UserMaterial::class, mappedBy: 'user_material')]
-    private Collection $userMaterial;
+    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_material')]
+    private Collection $userEquipment;
 
     /**
      * @var Collection<int, Equipment>
@@ -59,7 +59,7 @@ class Material
 
     public function __construct()
     {
-        $this->userMaterial = new ArrayCollection();
+        $this->userEquipment = new ArrayCollection();
         $this->equipment = new ArrayCollection();
     }
 
@@ -93,29 +93,29 @@ class Material
     }
 
     /**
-     * @return Collection<int, UserMaterial>
+     * @return Collection<int, UserEquipment>
      */
-    public function getUserMaterial(): Collection
+    public function getUserEquipment(): Collection
     {
-        return $this->userMaterial;
+        return $this->userEquipment;
     }
 
-    public function addUserMaterial(UserMaterial $userMaterial): static
+    public function addUserEquipment(UserEquipment $userEquipment): static
     {
-        if (!$this->userMaterial->contains($userMaterial)) {
-            $this->userMaterial->add($userMaterial);
-            $userMaterial->setUserMaterial($this);
+        if (!$this->userEquipment->contains($userEquipment)) {
+            $this->userEquipment->add($userEquipment);
+            $userEquipment->setUserEquipment($this);
         }
 
         return $this;
     }
 
-    public function removeUserMaterial(UserMaterial $userMaterial): static
+    public function removeUserEquipment(UserEquipment $userEquipment): static
     {
-        if ($this->userMaterial->removeElement($userMaterial)) {
+        if ($this->userEquipment->removeElement($userEquipment)) {
             // set the owning side to null (unless already changed)
-            if ($userMaterial->getUserMaterial() === $this) {
-                $userMaterial->setUserMaterial(null);
+            if ($userEquipment->getUserEquipment() === $this) {
+                $userEquipment->setUserEquipment(null);
             }
         }
 

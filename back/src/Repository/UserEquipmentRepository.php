@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\UserMaterial;
+use App\Entity\UserEquipment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<UserMaterial>
+ * @extends ServiceEntityRepository<UserEquipment>
  */
-class UserMaterialRepository extends ServiceEntityRepository
+class UserEquipmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserMaterial::class);
+        parent::__construct($registry, UserEquipment::class);
     }
 
 //    /**
-//     * @return UserMaterial[] Returns an array of UserMaterial objects
+//     * @return UserEquipment[] Returns an array of UserEquipment objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -31,7 +31,7 @@ class UserMaterialRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?UserMaterial
+//    public function findOneBySomeField($value): ?UserEquipment
 //    {
 //        return $this->createQueryBuilder('u')
 //            ->andWhere('u.exampleField = :val')

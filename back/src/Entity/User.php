@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,7 +18,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-
 #[ApiResource(
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write', 'user:put']],
@@ -27,7 +27,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             security: "is_granted('ROLE_USER') and object == user"
-        )
+        ),
+        new Post()
     ]
 )]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
@@ -72,26 +73,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $city = null;
 
-    #[Groups(['user:read', 'user:write'])]
-    #[ORM\Column(length: 255)]
-    private ?string $zip_code = null;
-
     #[Groups(['user:read'])]
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Profile $profile = null;
 
-
     /**
-     * @var Collection<int, UserMaterial>
+     * @var Collection<int, UserEquipment>
      */
-    #[ORM\OneToMany(targetEntity: UserMaterial::class, mappedBy: 'user_id', orphanRemoval: true)]
-    private Collection $userMaterial;
-
-    /**
-     * @var Collection<int, Notification>
-     */
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user_id', orphanRemoval: true)]
-    private Collection $notifications;
+    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_id', orphanRemoval: true)]
+    private Collection $userEquipment;
 
     /**
      * @var Collection<int, UserProfession>
@@ -99,9 +89,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: UserProfession::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userProfessions;
 
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user_id', orphanRemoval: true)]
+    private Collection $notifications;
+
+    #[ORM\Column(length: 255)]
+    private ?string $firstname = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
+
     public function __construct()
     {
-        $this->userMaterial = new ArrayCollection();
+        $this->userEquipment = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->userProfessions = new ArrayCollection();
     }
@@ -216,18 +218,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getZipCode(): ?string
-    {
-        return $this->zip_code;
-    }
-
-    public function setZipCode(string $zip_code): static
-    {
-        $this->zip_code = $zip_code;
-
-        return $this;
-    }
-
     public function getProfile(): ?Profile
     {
         return $this->profile;
@@ -251,29 +241,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, UserMaterial>
+     * @return Collection<int, UserEquipment>
      */
-    public function getUserMaterial(): Collection
+    public function getUserEquipment(): Collection
     {
-        return $this->userMaterial;
+        return $this->userEquipment;
     }
 
-    public function addUserMaterial(UserMaterial $userMaterial): static
+    public function addUserEquipment(UserEquipment $userEquipment): static
     {
-        if (!$this->userMaterial->contains($userMaterial)) {
-            $this->userMaterial->add($userMaterial);
-            $userMaterial->setUserId($this);
+        if (!$this->userEquipment->contains($userEquipment)) {
+            $this->userEquipment->add($userEquipment);
+            $userEquipment->setUserId($this);
         }
 
         return $this;
     }
 
-    public function removeUserMaterial(UserMaterial $userMaterial): static
+    public function removeUserEquipment(UserEquipment $userEquipment): static
     {
-        if ($this->userMaterial->removeElement($userMaterial)) {
+        if ($this->userEquipment->removeElement($userEquipment)) {
             // set the owning side to null (unless already changed)
-            if ($userMaterial->getUserId() === $this) {
-                $userMaterial->setUserId(null);
+            if ($userEquipment->getUserId() === $this) {
+                $userEquipment->setUserId(null);
             }
         }
 
@@ -336,6 +326,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $userProfession->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }

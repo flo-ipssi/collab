@@ -1,6 +1,12 @@
 
+export interface Model {
+    id: number;
+    model: string;
+    brand: string;
+}
 
 export interface Equipment {
+    id: number;
     type: string;
     brand: string;
     model: string;
@@ -29,20 +35,15 @@ export interface Profession {
 }
 export interface FormData {
     email: string;
-    name: string;
     firstname: string;
     lastname: string;
     username: string;
-    photo: File | null;
     city: City | null;
     country: Country | null;
-    postalCode: string;
     professions: Profession[];
-    materials: string[];
-    softwares: string[];
-    skills: string[];
+    materials: Model[];
     profile: {
-        avatar?: string | File;
+        avatar?: File | null;
         bio: string;
         twitter: string;
         instagram: string;

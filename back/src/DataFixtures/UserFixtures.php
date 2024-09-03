@@ -7,7 +7,7 @@ use App\Entity\Material;
 use App\Entity\Profession;
 use App\Entity\Profile;
 use App\Entity\User;
-use App\Entity\UserMaterial;
+use App\Entity\UserEquipment;
 use App\Entity\UserProfession;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -51,11 +51,11 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($profile);
 
             for ($k = 0; $k < rand(1, 2); $k++) {
-                $userMaterial = new UserMaterial();
-                $userMaterial->setUserId($user);
-                $userMaterial->setUserMaterial($materials[array_rand($materials)]);
-                $userMaterial->setDetails($faker->word(6));
-                $manager->persist($userMaterial);
+                $userEquipment = new UserEquipment();
+                $userEquipment->setUserId($user);
+                $userEquipment->setUserEquipment($materials[array_rand($materials)]);
+                $userEquipment->setDetails($faker->word(6));
+                $manager->persist($userEquipment);
             }
             
             for ($l = 0; $l < rand(1, 2); $l++) {
