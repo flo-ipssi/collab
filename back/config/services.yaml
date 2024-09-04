@@ -37,3 +37,8 @@ services:
             - '@knp_paginator'
             - '@fos_elastica.finder.user'
 
+    App\Service\CloudinaryService:
+        arguments:
+            $cloudName: '%env(CLOUDINARY_CLOUD_NAME)%'
+            $apiKey: '%env(CLOUDINARY_API_KEY)%'
+            $apiSecret: '%env(CLOUDINARY_API_SECRET)%'

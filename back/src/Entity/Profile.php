@@ -33,6 +33,27 @@ class Profile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $instagram = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $facebook = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $deezer = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $spotify = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $appleMusic = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $tidal = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $customSite = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -70,6 +91,90 @@ class Profile
     public function setAvatar(?string $avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getInstagram(): ?string
+    {
+        return $this->instagram;
+    }
+
+    public function setInstagram(?string $instagram): static
+    {
+        $this->instagram = $instagram;
+
+        return $this;
+    }
+
+    public function getFacebook(): ?string
+    {
+        return $this->facebook;
+    }
+
+    public function setFacebook(?string $facebook): static
+    {
+        $this->facebook = $facebook;
+
+        return $this;
+    }
+
+    public function getDeezer(): ?string
+    {
+        return $this->deezer;
+    }
+
+    public function setDeezer(?string $deezer): static
+    {
+        $this->deezer = $deezer;
+
+        return $this;
+    }
+
+    public function getSpotify(): ?string
+    {
+        return $this->spotify;
+    }
+
+    public function setSpotify(?string $spotify): static
+    {
+        $this->spotify = $spotify;
+
+        return $this;
+    }
+
+    public function getAppleMusic(): ?string
+    {
+        return $this->appleMusic;
+    }
+
+    public function setAppleMusic(?string $appleMusic): static
+    {
+        $this->appleMusic = $appleMusic;
+
+        return $this;
+    }
+
+    public function getTidal(): ?string
+    {
+        return $this->tidal;
+    }
+
+    public function setTidal(?string $tidal): static
+    {
+        $this->tidal = $tidal;
+
+        return $this;
+    }
+
+    public function getCustomSite(): ?string
+    {
+        return $this->customSite;
+    }
+
+    public function setCustomSite(?string $customSite): static
+    {
+        $this->customSite = $customSite;
 
         return $this;
     }

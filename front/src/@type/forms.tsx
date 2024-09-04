@@ -35,14 +35,15 @@ export interface Profession {
 }
 export interface FormData {
     email: string;
+    password: string;
     firstname: string;
     lastname: string;
     username: string;
-    city: City | null;
-    country: Country | null;
+    citySelected: City | null;
+    countrySelected: Country | null;
     professions: Profession[];
-    materials: Model[];
-    profile: {
+    equipments: Model[];
+    profileInfos: {
         avatar?: File | null;
         bio: string;
         twitter: string;

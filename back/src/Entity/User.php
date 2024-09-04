@@ -27,8 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Patch(
             security: "is_granted('ROLE_USER') and object == user"
-        ),
-        new Post()
+        )
     ]
 )]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]

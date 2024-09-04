@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Autocomplete, { AutocompleteChangeReason } from "@mui/material/Autocomplete";
-import { Typography, Box, CircularProgress, Button } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
+import { Typography, Box, CircularProgress } from "@mui/material";
 import { EquipmentCategory, Model } from "../@type/forms";
 
 
@@ -90,6 +89,7 @@ export default function EquipmentSelector({ onChange }: { onChange: (models: Mod
 
                     {availableBrands.length > 0 && (
                         <Autocomplete
+                            className="my-10"
                             multiple
                             options={availableBrands}
                             onChange={handleBrandChange}

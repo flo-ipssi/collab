@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Button, Checkbox } from "@mui/material";
+import { Button, Checkbox, CircularProgress } from "@mui/material";
 import {
   Person,
   MusicNote,
   Link,
-  Description,
   MusicNoteRounded,
 } from "@mui/icons-material";
 import StepProgressBar from "../components/form/StepProgressBar";
@@ -19,12 +18,14 @@ import axios from "axios";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import EquipmentSelector from "../components/EquipmentSelector";
-import { useForm } from "react-hook-form";
 import SummaryView from "../components/SummaryView";
+import { useNavigate } from "react-router-dom";
+import PasswordField from "../components/form/PasswordField";
 
 const Register: React.FC = () => {
   const [step, setStep] = useState<number>(1);
   const [preview, setPreview] = useState<string>("");
+  const navigate = useNavigate();
   const nextStep = () => setStep((prev) => Math.min(prev + 1, 6));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 1));
   const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -34,14 +35,15 @@ const Register: React.FC = () => {
   const [professions, setProfessions] = useState<Profession[]>([]);
   const [formData, setFormData] = useState<FormData>({
     email: "",
+    password: "",
     firstname: "",
     lastname: "",
     username: "",
-    city: null,
-    country: null,
+    citySelected: null,
+    countrySelected: null,
     professions: [],
-    materials: [],
-    profile: {
+    equipments: [],
+    profileInfos: {
       avatar: null,
       bio: "",
       twitter: "",
@@ -53,11 +55,8 @@ const Register: React.FC = () => {
       otherPlatforms: "",
     },
   });
-  const { handleSubmit, control, setValue } = useForm({
-    defaultValues: {
-      selectedModel: [],
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleAutocompleteChange = (
     event: React.SyntheticEvent,
@@ -70,15 +69,36 @@ const Register: React.FC = () => {
     });
   };
 
-  const onSubmit = (data: any) => {
-    console.log("Données du formulaire :", data);
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log("Données du formulaire :", formData);
+
+    axios.post('http://localhost:8000/api/create/user', formData)
+      .then(response => {
+        if (response.status === 201) {
+          const token = response.data.token;
+          localStorage.setItem('token', token);
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
+
+          navigate("/dashboard");
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors de l\'inscription:', error);
+      });
   };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: typeof value === 'object' && value !== null
+        ? JSON.stringify(value)
+        : value.toString()
+    }));
   };
 
   const handleProfileInputChange = (
@@ -87,8 +107,8 @@ const Register: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      profile: {
-        ...prev.profile,
+      profileInfos: {
+        ...prev.profileInfos,
         [name]: value,
       },
     }));
@@ -105,17 +125,25 @@ const Register: React.FC = () => {
     }
     setFormData((prev) => ({
       ...prev,
-      profile: {
-        ...prev.profile,
-        avatar:  file || null,
+      profileInfos: {
+        ...prev.profileInfos,
+        avatar: file || null,
       },
     }));
   };
   const handleEquipmentChange = (selectedModels: Model[]) => {
     setFormData((prevData) => ({
       ...prevData,
-      materials: selectedModels,
+      equipments: selectedModels,
     }));
+  };
+
+  const handlePasswordValid = (validPassword: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      password: validPassword,
+    }));
+    console.log("Mot de passe validé :", validPassword);
   };
 
   // Retrieve Countries
@@ -136,10 +164,10 @@ const Register: React.FC = () => {
 
   // If country selected, we retrieve cities
   useEffect(() => {
-    if (formData.country) {
+    if (formData.countrySelected) {
       axios
         .post("https://countriesnow.space/api/v0.1/countries/cities", {
-          country: formData.country.value,
+          country: formData.countrySelected.value,
         })
         .then((response) => {
           const cityList: City[] = response.data.data.map((city: string) => ({
@@ -150,7 +178,7 @@ const Register: React.FC = () => {
         })
         .catch((error) => console.error("Error fetching cities:", error));
     }
-  }, [formData.country]);
+  }, [formData.countrySelected]);
 
   // Professions
   useEffect(() => {
@@ -179,7 +207,7 @@ const Register: React.FC = () => {
         <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-4xl">
           <StepProgressBar step={step} totalSteps={6} />
 
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={onSubmit}>
             {step === 1 && (
               <div className="space-y-4">
                 <FormSectionHeader icon={Person} title="Basic Information" />
@@ -196,11 +224,11 @@ const Register: React.FC = () => {
                   required
                 />
                 <TextField
-                  label="Email"
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
+                  label="Prénom"
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  value={formData.firstname}
                   onChange={handleInputChange}
                   fullWidth
                   required
@@ -215,15 +243,17 @@ const Register: React.FC = () => {
                   required
                 />
                 <TextField
-                  label="Prénom"
-                  type="text"
-                  id="firstname"
-                  name="firstname"
-                  value={formData.firstname}
+                  label="Email"
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   fullWidth
                   required
                 />
+                <PasswordField onPasswordValid={handlePasswordValid} />
+
               </div>
             )}
 
@@ -237,9 +267,10 @@ const Register: React.FC = () => {
                 <Autocomplete
                   options={countries}
                   getOptionLabel={(option) => option.label}
-                  value={formData.country}
+                  value={formData.countrySelected}
+                  isOptionEqualToValue={(option, value) => option.label === value.label}
                   onChange={(event, value) => {
-                    handleAutocompleteChange(event, value, "country");
+                    handleAutocompleteChange(event, value, "countrySelected");
                     handleInputChange;
                   }}
                   renderInput={(params) => (
@@ -251,14 +282,14 @@ const Register: React.FC = () => {
                     />
                   )}
                 />
-                {formData.country && cities.length > 0 ? (
+                {formData.countrySelected && cities.length > 0 ? (
                   <>
                     <Autocomplete
                       options={cities}
                       getOptionLabel={(option) => option.label}
-                      value={formData.city}
+                      value={formData.citySelected}
                       onChange={(event, value) => {
-                        handleAutocompleteChange(event, value, "city");
+                        handleAutocompleteChange(event, value, "citySelected");
                         handleInputChange;
                       }}
                       renderInput={(params) => (
@@ -269,7 +300,7 @@ const Register: React.FC = () => {
                           fullWidth
                         />
                       )}
-                      disabled={!formData.country}
+                      disabled={!formData.countrySelected}
                     />
 
                     <Autocomplete
@@ -309,11 +340,6 @@ const Register: React.FC = () => {
               <div className="space-y-4">
                 <FormSectionHeader icon={MusicNoteRounded} title="ACTIVITES" />
                 <EquipmentSelector onChange={handleEquipmentChange} />
-
-                {/* <div>
-                  <label>Musical Equipment</label>
-                  <MultiSelect items={materials} category="materials" selectedItems={formData.materials} onItemSelect={handleMultiSelect} />
-                </div> */}
               </div>
             )}
             {step === 4 && (
@@ -323,7 +349,7 @@ const Register: React.FC = () => {
                   aria-label="minimum"
                   id="bio"
                   name="bio"
-                  value={formData.profile.bio}
+                  value={formData.profileInfos.bio}
                   onChange={handleProfileInputChange}
                   placeholder="Biography"
                   className="w-full p-2 border border-gray-300 rounded"
@@ -338,7 +364,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="twitter"
                   name="twitter"
-                  value={formData.profile.twitter}
+                  value={formData.profileInfos.twitter}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -347,7 +373,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="instagram"
                   name="instagram"
-                  value={formData.profile.instagram}
+                  value={formData.profileInfos.instagram}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -356,7 +382,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="facebook"
                   name="facebook"
-                  value={formData.profile.facebook}
+                  value={formData.profileInfos.facebook}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -365,7 +391,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="deezer"
                   name="deezer"
-                  value={formData.profile.deezer}
+                  value={formData.profileInfos.deezer}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -374,7 +400,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="spotify"
                   name="spotify"
-                  value={formData.profile.spotify}
+                  value={formData.profileInfos.spotify}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -383,7 +409,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="tidal"
                   name="tidal"
-                  value={formData.profile.tidal}
+                  value={formData.profileInfos.tidal}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -392,7 +418,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="otherPlatforms"
                   name="otherPlatforms"
-                  value={formData.profile.otherPlatforms}
+                  value={formData.profileInfos.otherPlatforms}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -409,8 +435,8 @@ const Register: React.FC = () => {
                 </Button>
               )}
               {step === 6 && (
-                <Button variant="contained" color="primary" type="submit">
-                  Submit
+                <Button variant="contained" color="primary" type="submit" disabled={isLoading} >
+                  {isLoading ? <CircularProgress size={24} /> : "Inscription"}
                 </Button>
               )}
             </div>
