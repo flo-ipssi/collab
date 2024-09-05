@@ -72,14 +72,14 @@ class CreateUserController extends AbstractController
 
 
         // Upload avatar
-        if (isset($data['profile']['avatar']) && !empty($data['profile']['avatar'])) {
-            $filePath = $data['profile']['avatar']['tmp_name'];
-            $uploadResult = $cloudinaryService->upload($filePath, [
-                'folder' => 'user_avatars'
-            ]);
-            $avatarUrl = $uploadResult['secure_url'];
-            $user->getProfile()->setAvatar($avatarUrl);
-        }
+        // if (isset($data['profile']['avatar']) && !empty($data['profile']['avatar'])) {
+        //     $filePath = $data['profile']['avatar']['tmp_name'];
+        //     $uploadResult = $cloudinaryService->upload($filePath, [
+        //         'folder' => 'user_avatars'
+        //     ]);
+        //     $avatarUrl = $uploadResult['secure_url'];
+        //     $user->getProfile()->setAvatar($avatarUrl);
+        // }
 
 
         if (isset($data['citySelected']) && is_array($data['citySelected'])) {

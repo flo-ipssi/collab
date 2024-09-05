@@ -6,7 +6,7 @@ interface AuthProviderProps {
 
 const MainContainer: React.FC<AuthProviderProps> = ({ children }) => {
     return (
-        <div className="mt-24">
+        <div className="mt-20">
             {children}
         </div>
     );

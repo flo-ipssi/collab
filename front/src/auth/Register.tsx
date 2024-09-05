@@ -81,12 +81,13 @@ const Register: React.FC = () => {
 
           navigate("/dashboard");
         }
+        setIsLoading(false);
       })
       .catch(error => {
         console.error('Erreur lors de l\'inscription:', error);
+        setIsLoading(false);
       });
 
-    setIsLoading(false);
   };
 
   const handleInputChange = (

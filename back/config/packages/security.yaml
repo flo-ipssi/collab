@@ -43,7 +43,11 @@ security:
     access_control:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/search, roles: ROLE_USER }
+        - { path: ^/api/professions, roles: PUBLIC_ACCESS }
+        - { path: ^/api/materials, roles: PUBLIC_ACCESS }
+        - { path: ^/api/create/user, roles: PUBLIC_ACCESS }
         - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
+
         - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
