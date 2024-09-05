@@ -35,12 +35,13 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user = new User();
             $user->setEmail("user$i@collab.com");
             $user->setRoles(["ROLE_USER"]);
+            $user->setFirstname($faker->firstName);
+            $user->setLastname($faker->lastName);
             $user->setUsername($faker->userName);
             $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
             $user->setPassword($hashedPassword);
             $user->setCountry($faker->country);
             $user->setCity($faker->city);
-            $user->setZipCode($faker->countryCode);
 
             $profile = new Profile();
             $profile->setUserId($user);

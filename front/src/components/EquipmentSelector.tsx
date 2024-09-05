@@ -43,6 +43,7 @@ export default function EquipmentSelector({ onChange }: { onChange: (models: Mod
             .filter((eq) => selectedBrand.includes(eq.brand))
             .map((eq) => ({
                 id: eq.id,
+                type: eq.type,
                 model: eq.model,
                 brand: eq.brand,
             }))
@@ -61,7 +62,7 @@ export default function EquipmentSelector({ onChange }: { onChange: (models: Mod
 
     const handleModelChange = (event: React.SyntheticEvent, values: Model[], reason: AutocompleteChangeReason) => {
         setSelectedModel(values);
-        onChange(values);  // Appel de la fonction onChange pour mettre à jour formData
+        onChange(values); 
     };
 
     return (
@@ -125,7 +126,7 @@ export default function EquipmentSelector({ onChange }: { onChange: (models: Mod
                             Vous avez sélectionné :
                             {selectedModel.map((model) => (
                                 <div key={model.id}>
-                                    Modèle : {model.model} (ID: {model.id}, Marque: {model.brand})
+                                    {model.type} Modèle : {model.model} (ID: {model.id}, Marque: {model.brand})
                                 </div>
                             ))}
                         </Typography>

@@ -7,6 +7,7 @@ use App\Entity\Profile;
 use App\Entity\User;
 use App\Service\CloudinaryService;
 use Doctrine\ORM\EntityManagerInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +15,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Cloudinary\Cloudinary;
 
 class CreateUserController extends AbstractController
 {
@@ -25,7 +25,8 @@ class CreateUserController extends AbstractController
         ValidatorInterface $validator,
         UserPasswordHasherInterface $passwordHasher,
         EntityManagerInterface $entityManager,
-        CloudinaryService $cloudinaryService
+        CloudinaryService $cloudinaryService,
+        JWTTokenManagerInterface $JWTTokenManager
     ): Response {
 
         $data = json_decode($request->getContent(), true);
@@ -40,7 +41,7 @@ class CreateUserController extends AbstractController
             $profile = new Profile();
             $profile->setBio($profileData['bio'] ?? '');
             $profile->setInstagram($profileData['instagram'] ?? '');
-            
+
             $user->setProfile($profile);
 
             $profileErrors = $validator->validate($profile);
@@ -50,7 +51,7 @@ class CreateUserController extends AbstractController
 
             $entityManager->persist($profile);
         }
-        
+
         if (isset($data['materials']) && is_array($data['materials'])) {
             foreach ($data['materials'] as $materialData) {
                 $material = $entityManager->getRepository(Material::class)->find($materialData['id']);
@@ -70,13 +71,14 @@ class CreateUserController extends AbstractController
         }
 
 
+        // Upload avatar
         if (isset($data['profile']['avatar']) && !empty($data['profile']['avatar'])) {
             $filePath = $data['profile']['avatar']['tmp_name'];
             $uploadResult = $cloudinaryService->upload($filePath, [
                 'folder' => 'user_avatars'
             ]);
             $avatarUrl = $uploadResult['secure_url'];
-            $user->getProfile()->setAvatar($avatarUrl); 
+            $user->getProfile()->setAvatar($avatarUrl);
         }
 
 
@@ -95,6 +97,11 @@ class CreateUserController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        return $this->json($user, Response::HTTP_CREATED, [], ['groups' => 'user:read']);
+        $token = $JWTTokenManager->create($user);
+
+        return $this->json([
+            'user' => $user,
+            'token' => $token
+        ], Response::HTTP_CREATED, [], ['groups' => 'user:read']);
     }
 }

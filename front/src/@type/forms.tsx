@@ -1,6 +1,7 @@
 
 export interface Model {
     id: number;
+    type: string;
     model: string;
     brand: string;
 }

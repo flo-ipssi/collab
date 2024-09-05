@@ -71,8 +71,7 @@ const Register: React.FC = () => {
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log("Données du formulaire :", formData);
-
+    setIsLoading(true);
     axios.post('http://localhost:8000/api/create/user', formData)
       .then(response => {
         if (response.status === 201) {
@@ -86,6 +85,8 @@ const Register: React.FC = () => {
       .catch(error => {
         console.error('Erreur lors de l\'inscription:', error);
       });
+
+    setIsLoading(false);
   };
 
   const handleInputChange = (
@@ -95,9 +96,7 @@ const Register: React.FC = () => {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: typeof value === 'object' && value !== null
-        ? JSON.stringify(value)
-        : value.toString()
+      [name]: value,
     }));
   };
 
@@ -213,21 +212,25 @@ const Register: React.FC = () => {
                 <FormSectionHeader icon={Person} title="Basic Information" />
 
                 <TextField
-                  label="Pseudo"
+                  label="Pseudo (Nom d'artiste)"
                   type="text"
                   id="username"
                   name="username"
+                  multiline
+                  maxRows={4}
                   variant="outlined"
                   value={formData.username}
                   onChange={handleInputChange}
                   fullWidth
-                  required
                 />
                 <TextField
                   label="Prénom"
                   type="text"
                   id="firstname"
                   name="firstname"
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   value={formData.firstname}
                   onChange={handleInputChange}
                   fullWidth
@@ -237,6 +240,9 @@ const Register: React.FC = () => {
                   label="Nom"
                   id="lastname"
                   name="lastname"
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   value={formData.lastname}
                   onChange={handleInputChange}
                   fullWidth
@@ -247,6 +253,9 @@ const Register: React.FC = () => {
                   type="email"
                   id="email"
                   name="email"
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   value={formData.email}
                   onChange={handleInputChange}
                   fullWidth
@@ -277,6 +286,8 @@ const Register: React.FC = () => {
                     <TextField
                       {...params}
                       label="Country"
+                      multiline
+                      maxRows={4}
                       variant="outlined"
                       fullWidth
                     />
@@ -296,6 +307,8 @@ const Register: React.FC = () => {
                         <TextField
                           {...params}
                           label="City"
+                          multiline
+                          maxRows={4}
                           variant="outlined"
                           fullWidth
                         />
@@ -328,7 +341,10 @@ const Register: React.FC = () => {
                         );
                       }}
                       renderInput={(params) => (
-                        <TextField {...params} label="Professions" />
+                        <TextField {...params}
+                          multiline
+                          maxRows={4}
+                          variant="outlined" label="Professions" />
                       )}
                     />
                   </>
@@ -360,6 +376,9 @@ const Register: React.FC = () => {
               <div className="space-y-4">
                 <FormSectionHeader icon={Link} title="Social Media Links" />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Twitter"
                   type="url"
                   id="twitter"
@@ -369,6 +388,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Instagram"
                   type="url"
                   id="instagram"
@@ -378,6 +400,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Facebook"
                   type="url"
                   id="facebook"
@@ -387,6 +412,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Deezer"
                   type="url"
                   id="deezer"
@@ -396,6 +424,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Spotify"
                   type="url"
                   id="spotify"
@@ -405,6 +436,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Tidal"
                   type="url"
                   id="tidal"
@@ -414,6 +448,9 @@ const Register: React.FC = () => {
                   fullWidth
                 />
                 <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
                   label="Other Platforms"
                   type="url"
                   id="otherPlatforms"

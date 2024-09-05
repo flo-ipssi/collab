@@ -3,8 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
-use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,6 +27,12 @@ use Symfony\Component\Validator\Constraints as Assert;
             security: "is_granted('ROLE_USER') and object == user",
         ),
         new Patch(
+            security: "is_granted('ROLE_USER') and object == user"
+        ),
+        new GetCollection(
+            security: "is_granted('ROLE_USER') and object == user"
+        ),
+        new Get(
             security: "is_granted('ROLE_USER') and object == user"
         )
     ]

@@ -54,6 +54,9 @@ class Profile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customSite = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $twitter = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -175,6 +178,18 @@ class Profile
     public function setCustomSite(?string $customSite): static
     {
         $this->customSite = $customSite;
+
+        return $this;
+    }
+
+    public function getTwitter(): ?string
+    {
+        return $this->twitter;
+    }
+
+    public function setTwitter(?string $twitter): static
+    {
+        $this->twitter = $twitter;
 
         return $this;
     }
