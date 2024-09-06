@@ -48,6 +48,7 @@ const SummaryView: React.FC<SummaryViewProps> = ({ formData, avatar }) => {
             <p><strong>Bio:</strong> {formData.profileInfos.bio || 'Not provided'}</p>
             <p><strong>Twitter:</strong> {formData.profileInfos.twitter || 'Not provided'}</p>
             <p><strong>Instagram:</strong> {formData.profileInfos.instagram || 'Not provided'}</p>
+            <p><strong>Youtube:</strong> {formData.profileInfos.youtube || 'Not provided'}</p>
             <p><strong>Facebook:</strong> {formData.profileInfos.facebook || 'Not provided'}</p>
             <p><strong>Deezer:</strong> {formData.profileInfos.deezer || 'Not provided'}</p>
             <p><strong>Spotify:</strong> {formData.profileInfos.spotify || 'Not provided'}</p>

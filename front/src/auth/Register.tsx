@@ -9,7 +9,7 @@ import {
 } from "@mui/icons-material";
 import StepProgressBar from "../components/form/StepProgressBar";
 import FormSectionHeader from "../components/form/FormSectionHeader";
-import { City, Country, FormData, Model, Profession } from "../@type/forms";
+import { City, Country, FormUserData, Model, Profession } from "../@type/forms";
 import cover from "../assets/bg.png";
 import ImageUploadForm from "../components/form/ImageUploadForm";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -21,6 +21,7 @@ import EquipmentSelector from "../components/EquipmentSelector";
 import SummaryView from "../components/SummaryView";
 import { useNavigate } from "react-router-dom";
 import PasswordField from "../components/form/PasswordField";
+import { uploadToCloudinary } from "../cloud/cloudinaryService";
 
 const Register: React.FC = () => {
   const [step, setStep] = useState<number>(1);
@@ -33,7 +34,7 @@ const Register: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [cities, setCities] = useState<City[]>([]);
   const [professions, setProfessions] = useState<Profession[]>([]);
-  const [formData, setFormData] = useState<FormData>({
+  const [formUserData, setFormData] = useState<FormUserData>({
     email: "",
     password: "",
     firstname: "",
@@ -49,6 +50,7 @@ const Register: React.FC = () => {
       twitter: "",
       instagram: "",
       facebook: "",
+      youtube: "",
       deezer: "",
       spotify: "",
       tidal: "",
@@ -61,33 +63,64 @@ const Register: React.FC = () => {
   const handleAutocompleteChange = (
     event: React.SyntheticEvent,
     value: Country | City | Profession[] | null,
-    name: keyof FormData
+    name: keyof FormUserData
   ) => {
     setFormData({
-      ...formData,
+      ...formUserData,
       [name]: value,
     });
   };
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
-    axios.post('http://localhost:8000/api/create/user', formData)
-      .then(response => {
-        if (response.status === 201) {
-          const token = response.data.token;
-          localStorage.setItem('token', token);
-          // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`; 
 
-          navigate("/dashboard");
+    try {
+      const response = await axios.post('http://localhost:8000/api/create/user', formUserData);
+
+      if (response.status === 201) {
+        const token = response.data.token;
+        const folder = response.data.folder;
+        localStorage.setItem('token', token);
+        let avatarUrl: string | null = null;
+        let userID = response.data.profile.id;
+
+        if (formUserData.profileInfos.avatar) {
+          const cloudinaryResult = await uploadToCloudinary(
+            formUserData.profileInfos.avatar,
+            `colllab/user/${folder}`
+          );
+
+          if (cloudinaryResult) {
+            avatarUrl = cloudinaryResult.secure_url;
+            console.log('Avatar uploaded successfully:', avatarUrl);
+          }
         }
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error('Erreur lors de l\'inscription:', error);
-        setIsLoading(false);
-      });
 
+        try {
+          await axios.patch(
+            `http://localhost:8000/api/profiles/${userID}`,
+            {
+              "avatar": avatarUrl,
+            },
+            {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': "application/merge-patch+json",
+              }
+            }
+          );
+          navigate("/dashboard");
+        } catch (error) {
+          console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
+        }
+      }
+
+    } catch (error) {
+      console.error('Erreur lors de l\'inscription:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (
@@ -109,7 +142,7 @@ const Register: React.FC = () => {
       ...prev,
       profileInfos: {
         ...prev.profileInfos,
-        [name]: value,
+        [name]: value.trim(),
       },
     }));
   };
@@ -131,6 +164,7 @@ const Register: React.FC = () => {
       },
     }));
   };
+
   const handleEquipmentChange = (selectedModels: Model[]) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -164,10 +198,10 @@ const Register: React.FC = () => {
 
   // If country selected, we retrieve cities
   useEffect(() => {
-    if (formData.countrySelected) {
+    if (formUserData.countrySelected) {
       axios
         .post("https://countriesnow.space/api/v0.1/countries/cities", {
-          country: formData.countrySelected.value,
+          country: formUserData.countrySelected.value,
         })
         .then((response) => {
           const cityList: City[] = response.data.data.map((city: string) => ({
@@ -178,7 +212,7 @@ const Register: React.FC = () => {
         })
         .catch((error) => console.error("Error fetching cities:", error));
     }
-  }, [formData.countrySelected]);
+  }, [formUserData.countrySelected]);
 
   // Professions
   useEffect(() => {
@@ -220,7 +254,7 @@ const Register: React.FC = () => {
                   multiline
                   maxRows={4}
                   variant="outlined"
-                  value={formData.username}
+                  value={formUserData.username}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -232,7 +266,7 @@ const Register: React.FC = () => {
                   multiline
                   maxRows={4}
                   variant="outlined"
-                  value={formData.firstname}
+                  value={formUserData.firstname}
                   onChange={handleInputChange}
                   fullWidth
                   required
@@ -244,7 +278,7 @@ const Register: React.FC = () => {
                   multiline
                   maxRows={4}
                   variant="outlined"
-                  value={formData.lastname}
+                  value={formUserData.lastname}
                   onChange={handleInputChange}
                   fullWidth
                   required
@@ -257,7 +291,7 @@ const Register: React.FC = () => {
                   multiline
                   maxRows={4}
                   variant="outlined"
-                  value={formData.email}
+                  value={formUserData.email}
                   onChange={handleInputChange}
                   fullWidth
                   required
@@ -277,7 +311,7 @@ const Register: React.FC = () => {
                 <Autocomplete
                   options={countries}
                   getOptionLabel={(option) => option.label}
-                  value={formData.countrySelected}
+                  value={formUserData.countrySelected}
                   isOptionEqualToValue={(option, value) => option.label === value.label}
                   onChange={(event, value) => {
                     handleAutocompleteChange(event, value, "countrySelected");
@@ -294,12 +328,12 @@ const Register: React.FC = () => {
                     />
                   )}
                 />
-                {formData.countrySelected && cities.length > 0 ? (
+                {formUserData.countrySelected && cities.length > 0 ? (
                   <>
                     <Autocomplete
                       options={cities}
                       getOptionLabel={(option) => option.label}
-                      value={formData.citySelected}
+                      value={formUserData.citySelected}
                       onChange={(event, value) => {
                         handleAutocompleteChange(event, value, "citySelected");
                         handleInputChange;
@@ -314,7 +348,7 @@ const Register: React.FC = () => {
                           fullWidth
                         />
                       )}
-                      disabled={!formData.countrySelected}
+                      disabled={!formUserData.countrySelected}
                     />
 
                     <Autocomplete
@@ -366,7 +400,7 @@ const Register: React.FC = () => {
                   aria-label="minimum"
                   id="bio"
                   name="bio"
-                  value={formData.profileInfos.bio}
+                  value={formUserData.profileInfos.bio}
                   onChange={handleProfileInputChange}
                   placeholder="Biography"
                   className="w-full p-2 border border-gray-300 rounded"
@@ -384,7 +418,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="twitter"
                   name="twitter"
-                  value={formData.profileInfos.twitter}
+                  value={formUserData.profileInfos.twitter}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -396,7 +430,19 @@ const Register: React.FC = () => {
                   type="url"
                   id="instagram"
                   name="instagram"
-                  value={formData.profileInfos.instagram}
+                  value={formUserData.profileInfos.instagram}
+                  onChange={handleProfileInputChange}
+                  fullWidth
+                />
+                <TextField
+                  multiline
+                  maxRows={4}
+                  variant="outlined"
+                  label="Youtube"
+                  type="url"
+                  id="youtube"
+                  name="youtube"
+                  value={formUserData.profileInfos.youtube}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -408,7 +454,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="facebook"
                   name="facebook"
-                  value={formData.profileInfos.facebook}
+                  value={formUserData.profileInfos.facebook}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -420,7 +466,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="deezer"
                   name="deezer"
-                  value={formData.profileInfos.deezer}
+                  value={formUserData.profileInfos.deezer}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -432,7 +478,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="spotify"
                   name="spotify"
-                  value={formData.profileInfos.spotify}
+                  value={formUserData.profileInfos.spotify}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -444,7 +490,7 @@ const Register: React.FC = () => {
                   type="url"
                   id="tidal"
                   name="tidal"
-                  value={formData.profileInfos.tidal}
+                  value={formUserData.profileInfos.tidal}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
@@ -456,14 +502,14 @@ const Register: React.FC = () => {
                   type="url"
                   id="otherPlatforms"
                   name="otherPlatforms"
-                  value={formData.profileInfos.otherPlatforms}
+                  value={formUserData.profileInfos.otherPlatforms}
                   onChange={handleProfileInputChange}
                   fullWidth
                 />
               </div>
             )}
 
-            {step === 6 && <SummaryView formData={formData} avatar={preview} />}
+            {step === 6 && <SummaryView formData={formUserData} avatar={preview} />}
 
             <div className="flex justify-between">
               {step > 1 && <Button onClick={prevStep}>Back</Button>}

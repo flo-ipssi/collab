@@ -40,7 +40,14 @@ class CreateUserController extends AbstractController
             $profileData = $data['profileInfos'];
             $profile = new Profile();
             $profile->setBio($profileData['bio'] ?? '');
+            $profile->setTwitter($profileData['twitter'] ?? '');
             $profile->setInstagram($profileData['instagram'] ?? '');
+            $profile->setYoutube($profileData['youtube'] ?? '');
+            $profile->setFacebook($profileData['facebook'] ?? '');
+            $profile->setDeezer($profileData['deezer'] ?? '');
+            $profile->setSpotify($profileData['spotify'] ?? '');
+            $profile->setTidal($profileData['tidal'] ?? '');
+            $profile->setCustomSite($profileData['otherPlatforms'] ?? '');
 
             $user->setProfile($profile);
 
@@ -89,6 +96,10 @@ class CreateUserController extends AbstractController
             $user->setCountry($data['countrySelected']['value']);
         }
 
+        // Create a folder
+        $bytes = random_bytes(5);
+        $folder = bin2hex($bytes);
+        $user->setFolder($folder);
 
         $hashedPassword = $passwordHasher->hashPassword($user, $user->getPassword());
         $user->setPassword($hashedPassword);
@@ -101,6 +112,7 @@ class CreateUserController extends AbstractController
 
         return $this->json([
             'user' => $user,
+            'folder' => $folder,
             'token' => $token
         ], Response::HTTP_CREATED, [], ['groups' => 'user:read']);
     }

@@ -38,6 +38,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             $user->setFirstname($faker->firstName);
             $user->setLastname($faker->lastName);
             $user->setUsername($faker->userName);
+            $bytes = random_bytes(5);
+            $user->setFolder(bin2hex($bytes));
             $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
             $user->setPassword($hashedPassword);
             $user->setCountry($faker->country);

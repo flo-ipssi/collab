@@ -42,13 +42,14 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/profile, roles: ROLE_USER }
-        - { path: ^/api/search, roles: ROLE_USER }
+        - { path: ^/api/users, roles: ROLE_USER }
+        - { path: ^/api/search, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+
         - { path: ^/api/professions, roles: PUBLIC_ACCESS }
         - { path: ^/api/materials, roles: PUBLIC_ACCESS }
         - { path: ^/api/create/user, roles: PUBLIC_ACCESS }
         - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
-
-        - { path: ^/api, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api, roles: PUBLIC_ACCESS }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         # - { path: ^/api/users, roles: ROLE_USER }

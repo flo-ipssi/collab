@@ -34,7 +34,7 @@ export interface Profession {
     name: string;
     value: string;
 }
-export interface FormData {
+export interface FormUserData {
     email: string;
     password: string;
     firstname: string;
@@ -50,6 +50,7 @@ export interface FormData {
         twitter: string;
         instagram: string;
         facebook: string;
+        youtube: string;
         deezer: string;
         spotify: string;
         tidal: string;

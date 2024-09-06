@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Patch;
 use App\Repository\ProfileRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write', 'user:put']],
     operations: [
-       
+       new Patch()
     ]
 )]
 class Profile
@@ -21,6 +22,7 @@ class Profile
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
@@ -30,32 +32,48 @@ class Profile
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $bio = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $avatar = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $instagram = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facebook = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $deezer = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $spotify = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $appleMusic = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tidal = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $customSite = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $twitter = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $youtube = null;
+
+    #[Groups(['user:read', 'user:write'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $publicIdAvatar = null;
 
     public function getId(): ?int
     {
@@ -190,6 +208,30 @@ class Profile
     public function setTwitter(?string $twitter): static
     {
         $this->twitter = $twitter;
+
+        return $this;
+    }
+
+    public function getYoutube(): ?string
+    {
+        return $this->youtube;
+    }
+
+    public function setYoutube(string $youtube): static
+    {
+        $this->youtube = $youtube;
+
+        return $this;
+    }
+
+    public function getPublicIdAvatar(): ?string
+    {
+        return $this->publicIdAvatar;
+    }
+
+    public function setPublicIdAvatar(?string $publicIdAvatar): static
+    {
+        $this->publicIdAvatar = $publicIdAvatar;
 
         return $this;
     }
