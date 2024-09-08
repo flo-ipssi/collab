@@ -83,8 +83,10 @@ const Register: React.FC = () => {
         const folder = response.data.folder;
         localStorage.setItem('token', token);
         let avatarUrl: string | null = null;
-        let userID = response.data.profile.id;
+        let userID = response.data.user.profile.id;
 
+        console.log('avatar: ' +formUserData.profileInfos.avatar);
+        
         if (formUserData.profileInfos.avatar) {
           const cloudinaryResult = await uploadToCloudinary(
             formUserData.profileInfos.avatar,
@@ -110,7 +112,7 @@ const Register: React.FC = () => {
               }
             }
           );
-          navigate("/dashboard");
+          window.location.reload();
         } catch (error) {
           console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);
         }
@@ -142,7 +144,7 @@ const Register: React.FC = () => {
       ...prev,
       profileInfos: {
         ...prev.profileInfos,
-        [name]: value.trim(),
+        [name]: value,
       },
     }));
   };

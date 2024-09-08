@@ -2,9 +2,13 @@
 
 namespace App\Controller\User;
 
+use App\Entity\Equipment;
 use App\Entity\Material;
+use App\Entity\Profession;
 use App\Entity\Profile;
 use App\Entity\User;
+use App\Entity\UserEquipment;
+use App\Entity\UserProfession;
 use App\Service\CloudinaryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -59,20 +63,28 @@ class CreateUserController extends AbstractController
             $entityManager->persist($profile);
         }
 
-        if (isset($data['materials']) && is_array($data['materials'])) {
-            foreach ($data['materials'] as $materialData) {
-                $material = $entityManager->getRepository(Material::class)->find($materialData['id']);
-                if ($material) {
-                    $user->addMaterial($material);
+        if (isset($data['equipments']) && is_array($data['equipments'])) {
+            foreach ($data['equipments'] as $equipmentData) {
+                $equipment = $entityManager->getRepository(Equipment::class)->find($equipmentData['id']);
+                if ($equipment) {
+                    $userEquipment = new UserEquipment();
+                    $userEquipment
+                        ->setUser($user)
+                        ->setEquipment($equipment);
+                        $entityManager->persist($userEquipment);
                 }
             }
         }
 
         if (isset($data['professions']) && is_array($data['professions'])) {
             foreach ($data['professions'] as $professionData) {
-                $profession = $entityManager->getRepository(Material::class)->find($professionData['id']);
+                $profession = $entityManager->getRepository(Profession::class)->find($professionData['id']);
                 if ($profession) {
-                    $user->addMaterial($profession);
+                    $userProfession = new UserProfession();
+                    $userProfession
+                        ->setUser($user)
+                        ->setProfession($profession);
+                        $entityManager->persist($userProfession);
                 }
             }
         }

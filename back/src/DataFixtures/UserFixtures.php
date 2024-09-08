@@ -3,6 +3,7 @@
 // src/DataFixtures/UserFixtures.php
 namespace App\DataFixtures;
 
+use App\Entity\Equipment;
 use App\Entity\Material;
 use App\Entity\Profession;
 use App\Entity\Profile;
@@ -28,7 +29,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $faker = Faker\Factory::create('fr_FR');
 
         // Materials and Professions existed
-        $materials = $manager->getRepository(Material::class)->findAll();
+        $equipment = $manager->getRepository(Equipment::class)->findAll();
         $professions = $manager->getRepository(Profession::class)->findAll();
         
         for ($i = 0; $i < 10; $i++) {
@@ -55,8 +56,8 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
 
             for ($k = 0; $k < rand(1, 2); $k++) {
                 $userEquipment = new UserEquipment();
-                $userEquipment->setUserId($user);
-                $userEquipment->setUserEquipment($materials[array_rand($materials)]);
+                $userEquipment->setUser($user);
+                $userEquipment->setEquipment($equipment[array_rand($equipment)]);
                 $userEquipment->setDetails($faker->word(6));
                 $manager->persist($userEquipment);
             }

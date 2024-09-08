@@ -87,7 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, UserEquipment>
      */
-    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userEquipment;
 
     /**
@@ -99,15 +99,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Notification>
      */
-    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
+    #[Groups(['user:read'])]
     #[ORM\Column(length: 255)]
     private ?string $folder = null;
 
@@ -262,7 +265,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->userEquipment->contains($userEquipment)) {
             $this->userEquipment->add($userEquipment);
-            $userEquipment->setUserId($this);
+            $userEquipment->setUser($this);
         }
 
         return $this;
@@ -272,8 +275,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->userEquipment->removeElement($userEquipment)) {
             // set the owning side to null (unless already changed)
-            if ($userEquipment->getUserId() === $this) {
-                $userEquipment->setUserId(null);
+            if ($userEquipment->getUser() === $this) {
+                $userEquipment->setUser(null);
             }
         }
 

@@ -14,42 +14,32 @@ class UserEquipment
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'userEquipment')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Material $user_material = null;
 
     #[ORM\ManyToOne(inversedBy: 'userEquipment')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $details = null;
+
+    #[ORM\ManyToOne(inversedBy: 'userEquipment')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Equipment $equipment = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserEquipment(): ?Material
+
+    public function getUser(): ?User
     {
-        return $this->user_material;
+        return $this->user;
     }
 
-    public function setUserEquipment(?Material $user_material): static
+    public function setUser(?User $user): static
     {
-        $this->user_material = $user_material;
-
-        return $this;
-    }
-
-    public function getUserId(): ?User
-    {
-        return $this->user_id;
-    }
-
-    public function setUserId(?User $user_id): static
-    {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -62,6 +52,18 @@ class UserEquipment
     public function setDetails(?string $details): static
     {
         $this->details = $details;
+
+        return $this;
+    }
+
+    public function getEquipment(): ?Equipment
+    {
+        return $this->equipment;
+    }
+
+    public function setEquipment(?Equipment $equipment): static
+    {
+        $this->equipment = $equipment;
 
         return $this;
     }

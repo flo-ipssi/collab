@@ -1,12 +1,14 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
+import { DataUser } from '../@type/forms';
 
 interface AuthContextType {
     token: string | null;
     login: (email: string, password: string) => Promise<void>;
     logout: () => void;
-    user: any;
+    user: DataUser;
+    updateUser: (updatedData: any) => Promise<void>; 
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,14 +24,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     useEffect(() => {
         const savedToken = localStorage.getItem('token');
         if (savedToken) {
-            try {
-                const decodedUser = jwtDecode(savedToken);
-                setToken(savedToken);
-                setUser(decodedUser);
-            } catch (error) {
-                // console.error('Jeton invalide:', error);
-                localStorage.removeItem('token');
-            }
+            setToken(savedToken);
+            fetchUserInfo(savedToken); 
         }
     }, []);
 
@@ -40,10 +36,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (token) {
                 localStorage.setItem('token', token);
                 setToken(token);
-                setUser(jwtDecode(token));
+                const decodedUser: any = jwtDecode(token);
+                fetchUserInfo(token);
             }
         } catch (error) {
             console.error('Erreur lors de la connexion:', error);
+        }
+    };
+
+    const fetchUserInfo = async (token: string) => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/me', { 
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            setUser(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des informations utilisateur:', error);
+            logout(); 
+        }
+    };
+
+    const updateUser = async (updatedData: any) => {
+        if (!user || !token) return;
+        try {
+            const response = await axios.patch(
+                `http://localhost:8000/api/users/${user.id}`, 
+                updatedData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/merge-patch+json',
+                    },
+                }
+            );
+            setUser(response.data);  
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des infos utilisateur:', error);
         }
     };
 
@@ -54,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ token, login, logout, user }}>
+        <AuthContext.Provider value={{ token, login, logout, user, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

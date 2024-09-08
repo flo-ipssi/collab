@@ -6,6 +6,8 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EquipmentRepository;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -37,6 +39,11 @@ class Equipment
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['equipment:read'])]
     private ?Material $material = null;
+
+
+    public function __construct()
+    {
+    }
 
     public function getId(): ?int
     {

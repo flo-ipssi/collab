@@ -45,12 +45,6 @@ class Material
     private ?string $description = null;
 
     /**
-     * @var Collection<int, UserEquipment>
-     */
-    #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user_material')]
-    private Collection $userEquipment;
-
-    /**
      * @var Collection<int, Equipment>
      */
     #[ORM\OneToMany(targetEntity: Equipment::class, mappedBy: 'material', orphanRemoval: true)]
@@ -59,7 +53,6 @@ class Material
 
     public function __construct()
     {
-        $this->userEquipment = new ArrayCollection();
         $this->equipment = new ArrayCollection();
     }
 
@@ -92,35 +85,6 @@ class Material
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserEquipment>
-     */
-    public function getUserEquipment(): Collection
-    {
-        return $this->userEquipment;
-    }
-
-    public function addUserEquipment(UserEquipment $userEquipment): static
-    {
-        if (!$this->userEquipment->contains($userEquipment)) {
-            $this->userEquipment->add($userEquipment);
-            $userEquipment->setUserEquipment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserEquipment(UserEquipment $userEquipment): static
-    {
-        if ($this->userEquipment->removeElement($userEquipment)) {
-            // set the owning side to null (unless already changed)
-            if ($userEquipment->getUserEquipment() === $this) {
-                $userEquipment->setUserEquipment(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Equipment>

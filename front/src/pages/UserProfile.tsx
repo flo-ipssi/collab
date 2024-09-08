@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../components.css";
 import { DataUser } from "../@type/forms";
 import { FaDeezer, FaFacebook, FaInstagram, FaSpotify, FaTwitter } from "react-icons/fa6";
@@ -8,28 +8,33 @@ import { SiApplemusic } from "react-icons/si";
 import { CgWebsite } from "react-icons/cg";
 import ImageUploadForm from "../components/form/ImageUploadForm";
 import MediaManager from "../components/form/MediaManager";
-const UserProfile: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("tab_7_1");
+import { useAuth } from "../auth/AuthContext";
 
-  const [preview, setPreview] = useState<string>('')
+const UserProfile: React.FC = () => {
+  const { user, updateUser } = useAuth();
+  const [activeTab, setActiveTab] = useState("tab_7_1");
+  const [preview, setPreview] = useState<string | undefined>(user?.profile.avatar as string)
+  
+
   const [formValues, setFormValues] = useState<DataUser>({
-    username: "BigBoss",
-    firstname: "Jared Palmer",
-    lastname: "Jared Palmer",
-    email: "test@test.fr",
-    website: "https://jaredpalmer.com",
+    username: user?.username || '',
+    firstname: user?.firstname || '',
+    lastname: user?.lastname || '',
+    email: user?.email || '',
+    website: user?.website || '',
     profile: {
-      avatar: "",
-      bio: "I'm a digital artist and illustrator.",
-      twitter: "https://twitter.com/jaredpalmer",
-      instagram: "https://instagram.com/jaredpalmer",
-      facebook: "https://twitter.com/jaredpalmer",
-      spotify: "https://twitter.com/jaredpalmer",
-      deezer: "https://twitter.com/jaredpalmer",
-      appleMusic: "https://twitter.com/jaredpalmer",
-      website: "",
+      avatar: user?.profile.avatar || '',
+      bio: user?.profile.bio || '',
+      twitter: user?.profile.twitter || '',
+      instagram: user?.profile.instagram || '',
+      facebook: user?.profile.facebook || '',
+      spotify: user?.profile.spotify || '',
+      deezer: user?.profile.deezer || '',
+      appleMusic: user?.profile.appleMusic || '',
+      website: user?.website || '',
     },
   });
+
   const initialMediaCards = [
     {
       id: 1,
@@ -74,15 +79,11 @@ const UserProfile: React.FC = () => {
       media: "Album",
     },
   ];
+
   const [mediaCards, setMediaCards] = useState(initialMediaCards);
   const handleSave = (updatedCards: typeof mediaCards) => {
     setMediaCards(updatedCards);
     console.log("Media cards updated:", updatedCards);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form submitted with media cards:", mediaCards);
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +103,24 @@ const UserProfile: React.FC = () => {
       },
     }));
   }
+
+  const retriveData = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateUser(formValues);
+      alert('User info updated successfully!');
+    } catch (error) {
+      console.error('Failed to update user info:', error);
+    }
+  };
+
+  useEffect(() => {
+    console.log(user);
+    
+    retriveData
+  }, [])
+
+
   return (
     <div className="flex px-6">
       <aside className="w-1/4 bg-gray-100 p-4 mr-5">
@@ -212,7 +231,7 @@ const UserProfile: React.FC = () => {
             } transition-opacity duration-300`}
           id="tab_7_2"
         >
-          <ImageUploadForm handleFileChange={handleFileChange} preview={preview} />
+          <ImageUploadForm handleFileChange={handleFileChange} preview={preview as string} />
           {/* Insertion du composant MediaManager */}
           <MediaManager initialCards={mediaCards} onSave={handleSave} />
 
@@ -288,9 +307,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.facebook}
+              id="facebook"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://www.facebook.com"
             />
           </div>
           <div className="flex mt-4">
@@ -299,9 +319,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.instagram}
+              id="instagram"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://www.instagram.com/"
             />
           </div>
           <div className="flex mt-4">
@@ -310,9 +331,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.twitter}
+              id="twitter"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://x.com/"
             />
           </div>
           <div className="flex mt-4">
@@ -321,9 +343,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.spotify}
+              id="spotify"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://open.spotify.com"
             />
           </div>
           <div className="flex mt-4">
@@ -332,9 +355,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.deezer}
+              id="deezer"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://www.deezer.com/"
             />
           </div>
           <div className="flex mt-4">
@@ -343,9 +367,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.appleMusic}
+              id="appleMusic"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://music.apple.com/"
             />
           </div>
           <div className="flex mt-4">
@@ -354,9 +379,10 @@ const UserProfile: React.FC = () => {
             </span>
             <input
               type="text"
-              id="website-admin"
+              value={user?.profile.website}
+              id="websit"
               className="rounded-none rounded-e-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="elonmusk"
+              placeholder="https://collab.com"
             />
           </div>
         </div>
