@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:8.1-fpm-alpine
 
 # Dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && update-ca-certificates
 
 COPY . /var/www
-COPY cacert.pem /etc/ssl/certs/
+# COPY cacert.pem /etc/ssl/certs/
 
 WORKDIR /var/www
 

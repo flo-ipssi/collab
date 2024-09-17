@@ -84,8 +84,6 @@ const Register: React.FC = () => {
         localStorage.setItem('token', token);
         let avatarUrl: string | null = null;
         let userID = response.data.user.profile.id;
-
-        console.log('avatar: ' +formUserData.profileInfos.avatar);
         
         if (formUserData.profileInfos.avatar) {
           const cloudinaryResult = await uploadToCloudinary(
