@@ -35,7 +35,7 @@ class CreateUserController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
-
+        // dd($user, $data);
         $errors = $validator->validate($user);
         if (count($errors) > 0) {
             return $this->json($errors, Response::HTTP_BAD_REQUEST);
@@ -62,6 +62,19 @@ class CreateUserController extends AbstractController
 
             $entityManager->persist($profile);
         }
+        if (isset($data['professions']) && is_array($data['professions'])) {
+            foreach ($data['professions'] as $professionData) {
+                $profession = $entityManager->getRepository(Profession::class)->find($professionData['id']);
+                if ($profession) {
+                    $userProfession = new UserProfession();
+                    $userProfession
+                        ->setUser($user)
+                        ->setProfession($profession);
+                        $entityManager->persist($userProfession);
+                }
+            }
+        }
+
 
         if (isset($data['equipments']) && is_array($data['equipments'])) {
             foreach ($data['equipments'] as $equipmentData) {
@@ -72,19 +85,6 @@ class CreateUserController extends AbstractController
                         ->setUser($user)
                         ->setEquipment($equipment);
                         $entityManager->persist($userEquipment);
-                }
-            }
-        }
-
-        if (isset($data['professions']) && is_array($data['professions'])) {
-            foreach ($data['professions'] as $professionData) {
-                $profession = $entityManager->getRepository(Profession::class)->find($professionData['id']);
-                if ($profession) {
-                    $userProfession = new UserProfession();
-                    $userProfession
-                        ->setUser($user)
-                        ->setProfession($profession);
-                        $entityManager->persist($userProfession);
                 }
             }
         }

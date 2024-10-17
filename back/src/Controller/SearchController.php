@@ -22,13 +22,10 @@ class SearchController
     #[Route('/api/search/{keyword}/{page}', name: 'search', methods: ['GET'])]
     public function search(Request $request, string $keyword, int $page = 1)
     {
-        // if (!$request->isXmlHttpRequest()) {
-        //     return new JsonResponse("Not an HTTP requests");
-        // } 
         $queryString = new QueryString();
-        // Use `*` for partial matches
-        $queryString->setQuery('*' . $keyword . '*'); 
-        $queryString->setFields(['username']); 
+
+        $queryString->setQuery('*' . $keyword . '*');
+        $queryString->setFields(['username']);
         // $queryString->setFields(['username', 'country', 'city', 'zip_code', 'profile.bio']); 
 
         $results = $this->finder->createPaginatorAdapter($queryString);
@@ -37,8 +34,8 @@ class SearchController
         $data = $this->serializer->serialize($pagination->getItems(), 'json', ['groups' => 'user:read']);
 
         return new JsonResponse([
-            'pagination' => json_decode($data, true) ?? [],
-            // 'total' => $results->getNbResults(),
+            "results" => json_decode($data, true) ?? [],
+            'total' => count(json_decode($data, true)) ?? 0,
         ]);
     }
 }

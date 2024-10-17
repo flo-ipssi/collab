@@ -1,5 +1,5 @@
 # Utiliser une image Node.js appropriée
-FROM node:latest
+FROM node:18
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Install dependencies and update certificates
 
-RUN apt-get update && apt-get install -y ca-certificates
+# RUN apt-get update && apt-get install -y ca-certificates
 RUN npm set strict-ssl false && npm install --legacy-peer-deps
 RUN npm install -D @swc/cli @swc/core --legacy-peer-deps
 # RUN npm set strict-ssl true

@@ -52,6 +52,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 },
             });
             setUser(response.data);
+            console.log('User fetched:', response.data);
+            
         } catch (error) {
             console.error('Erreur lors de la récupération des informations utilisateur:', error);
             logout(); 

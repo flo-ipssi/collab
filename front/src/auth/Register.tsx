@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
-import { Button, Checkbox, CircularProgress } from "@mui/material";
+import { Button, Checkbox, CircularProgress, InputAdornment } from "@mui/material";
 import {
   Person,
   MusicNote,
@@ -84,7 +84,7 @@ const Register: React.FC = () => {
         localStorage.setItem('token', token);
         let avatarUrl: string | null = null;
         let userID = response.data.user.profile.id;
-        
+
         if (formUserData.profileInfos.avatar) {
           const cloudinaryResult = await uploadToCloudinary(
             formUserData.profileInfos.avatar,
@@ -415,12 +415,19 @@ const Register: React.FC = () => {
                   maxRows={4}
                   variant="outlined"
                   label="Twitter"
-                  type="url"
+                  type="text"
                   id="twitter"
                   name="twitter"
                   value={formUserData.profileInfos.twitter}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://x.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -433,6 +440,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.instagram}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://www.instagram.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -445,6 +459,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.youtube}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        @youtube
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -457,6 +478,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.facebook}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://www.facebook.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -469,6 +497,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.deezer}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://www.deezer.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -481,6 +516,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.spotify}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        https://open.spotify.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline
@@ -493,6 +535,13 @@ const Register: React.FC = () => {
                   value={formUserData.profileInfos.tidal}
                   onChange={handleProfileInputChange}
                   fullWidth
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start" className="">
+                        https://tidal.com/
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <TextField
                   multiline

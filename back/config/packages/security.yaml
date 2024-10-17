@@ -51,7 +51,7 @@ security:
         - { path: ^/api/create/user, roles: PUBLIC_ACCESS }
         - { path: ^/authentication_token, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: PUBLIC_ACCESS }
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
         # - { path: ^/api/users, roles: ROLE_USER }
         # - { path: ^/authentication_token, roles: PUBLIC_ACCESS }

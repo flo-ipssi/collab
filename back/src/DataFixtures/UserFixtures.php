@@ -29,47 +29,61 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $faker = Faker\Factory::create('fr_FR');
 
         // Materials and Professions existed
-        $equipment = $manager->getRepository(Equipment::class)->findAll();
-        $professions = $manager->getRepository(Profession::class)->findAll();
+        // $equipment = $manager->getRepository(Equipment::class)->findAll();
+        // $professions = $manager->getRepository(Profession::class)->findAll();
         
-        for ($i = 0; $i < 10; $i++) {
-            $user = new User();
-            $user->setEmail("user$i@collab.com");
-            $user->setRoles(["ROLE_USER"]);
-            $user->setFirstname($faker->firstName);
-            $user->setLastname($faker->lastName);
-            $user->setUsername($faker->userName);
-            $bytes = random_bytes(5);
-            $user->setFolder(bin2hex($bytes));
-            $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-            $user->setPassword($hashedPassword);
-            $user->setCountry($faker->country);
-            $user->setCity($faker->city);
+        // for ($i = 0; $i < 10; $i++) {
+        //     $user = new User();
+        //     $user->setEmail("user$i@collab.com");
+        //     $user->setRoles(["ROLE_USER"]);
+        //     $user->setFirstname($faker->firstName);
+        //     $user->setLastname($faker->lastName);
+        //     $user->setUsername($faker->userName);
+        //     $bytes = random_bytes(5);
+        //     $user->setFolder(bin2hex($bytes));
+        //     $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+        //     $user->setPassword($hashedPassword);
+        //     $user->setCountry($faker->country);
+        //     $user->setCity($faker->city);
 
-            $profile = new Profile();
-            $profile->setUserId($user);
-            $profile->setBio("test bio");
-            $profile->setAvatar("https://wallpapers-clan.com/wp-content/uploads/2023/01/rapper-style-pfp-1.jpg");
+        //     $profile = new Profile();
+        //     $profile->setUserId($user);
+        //     $profile->setBio("test bio");
+        //     $profile->setAvatar("https://wallpapers-clan.com/wp-content/uploads/2023/01/rapper-style-pfp-1.jpg");
 
-            $manager->persist($user);
-            $manager->persist($profile);
+        //     $manager->persist($user);
+        //     $manager->persist($profile);
 
-            for ($k = 0; $k < rand(1, 2); $k++) {
-                $userEquipment = new UserEquipment();
-                $userEquipment->setUser($user);
-                $userEquipment->setEquipment($equipment[array_rand($equipment)]);
-                $userEquipment->setDetails($faker->word(6));
-                $manager->persist($userEquipment);
-            }
+        //     for ($k = 0; $k < rand(1, 2); $k++) {
+        //         $userEquipment = new UserEquipment();
+        //         $userEquipment->setUser($user);
+        //         $userEquipment->setEquipment($equipment[array_rand($equipment)]);
+        //         $userEquipment->setDetails($faker->word(6));
+        //         $manager->persist($userEquipment);
+        //     }
             
-            for ($l = 0; $l < rand(1, 2); $l++) {
-                $userProfession = new UserProfession();
-                $userProfession->setUser($user);
-                $userProfession->setProfession($professions[array_rand($professions)]);
-                $manager->persist($userProfession);
-            }
-        }
+        //     for ($l = 0; $l < rand(1, 2); $l++) {
+        //         $userProfession = new UserProfession();
+        //         $userProfession->setUser($user);
+        //         $userProfession->setProfession($professions[array_rand($professions)]);
+        //         $manager->persist($userProfession);
+        //     }
+        // }
 
+        $admin = new User();
+        $admin->setEmail("admin@collab.com");
+        $admin->setRoles(["ROLE_ADMIN"]);
+        $admin->setFirstname($faker->firstName);
+        $admin->setLastname($faker->lastName);
+        $admin->setUsername($faker->userName);
+        $bytes = random_bytes(5);
+        $admin->setFolder(bin2hex($bytes));
+        $hashedPassword = $this->passwordHasher->hashPassword($admin, 'password');
+        $admin->setPassword($hashedPassword);
+        $admin->setCountry($faker->country);
+        $admin->setCity($faker->city);
+
+        $manager->persist($admin);
         $manager->flush();
     }
 

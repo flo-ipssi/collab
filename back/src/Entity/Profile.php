@@ -68,12 +68,16 @@ class Profile
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $twitter = null;
 
+    #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $youtube = null;
 
     #[Groups(['user:read', 'user:write'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $publicIdAvatar = null;
+
+    #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    private ?array $musicStyle = null;
 
     public function getId(): ?int
     {
@@ -232,6 +236,18 @@ class Profile
     public function setPublicIdAvatar(?string $publicIdAvatar): static
     {
         $this->publicIdAvatar = $publicIdAvatar;
+
+        return $this;
+    }
+
+    public function getMusicStyle(): ?array
+    {
+        return $this->musicStyle;
+    }
+
+    public function setMusicStyle(?array $musicStyle): static
+    {
+        $this->musicStyle = $musicStyle;
 
         return $this;
     }

@@ -3,41 +3,50 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\EquipmentRepository;
-use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\ApiFilter;
+use App\Repository\EquipmentRepository;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EquipmentRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['equipment:read']],
+    normalizationContext: ['groups' => ['equipment:list','equipment:read']],
     operations: [
-        new GetCollection(),
+        new GetCollection(
+            normalizationContext: ['groups' => ['equipment:list','equipment:read', ]]
+        ),
         new Get(),
+        new Post(),
+        new Put(),
+        new Delete() 
     ]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['model' => 'partial', 'brand' => 'exact'])]
 class Equipment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['equipment:read', 'material:read'])]
+    #[Groups(['equipment:read', 'equipment:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['equipment:read', 'material:read'])]
+    #[Groups(['equipment:read', 'equipment:list'])]
     private ?string $brand = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['equipment:read', 'material:read'])]
+    #[Groups(['equipment:read', 'equipment:list'])]
     private ?string $model = null;
 
     #[ORM\ManyToOne(inversedBy: 'equipment')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['equipment:read'])]
+    #[Groups(['equipment:read', 'equipment:list'])]
     private ?Material $material = null;
 
 

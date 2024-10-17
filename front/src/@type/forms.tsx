@@ -72,6 +72,7 @@ export interface DataUser {
         facebook: string;
         instagram: string;
         twitter: string;
+        youtube: string;
         spotify: string;
         deezer: string;
         appleMusic: string;
