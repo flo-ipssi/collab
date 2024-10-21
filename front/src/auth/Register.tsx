@@ -183,7 +183,7 @@ const Register: React.FC = () => {
   // Retrieve Countries
   useEffect(() => {
     axios
-      .get("https://countriesnow.space/api/v0.1/countries/")
+      .get("@countriesnow.space/api/v0.1/countries/")
       .then((response) => {
         const countryList: Country[] = response.data.data.map(
           (country: { country: string }) => ({
@@ -200,7 +200,7 @@ const Register: React.FC = () => {
   useEffect(() => {
     if (formUserData.countrySelected) {
       axios
-        .post("https://countriesnow.space/api/v0.1/countries/cities", {
+        .post("@countriesnow.space/api/v0.1/countries/cities", {
           country: formUserData.countrySelected.value,
         })
         .then((response) => {
@@ -424,7 +424,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        https://x.com/
+                        @x
                       </InputAdornment>
                     ),
                   }}
@@ -443,7 +443,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        https://www.instagram.com/
+                        @instagram
                       </InputAdornment>
                     ),
                   }}
@@ -481,7 +481,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        https://www.facebook.com/
+                        @facebook
                       </InputAdornment>
                     ),
                   }}
@@ -500,7 +500,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        https://www.deezer.com/
+                        @deezer
                       </InputAdornment>
                     ),
                   }}
@@ -519,7 +519,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        https://open.spotify.com/
+                        @spotify
                       </InputAdornment>
                     ),
                   }}
@@ -538,7 +538,7 @@ const Register: React.FC = () => {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start" className="">
-                        https://tidal.com/
+                        @tidal
                       </InputAdornment>
                     ),
                   }}
