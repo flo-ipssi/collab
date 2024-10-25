@@ -17,13 +17,14 @@ const CardProfileSearch: React.FC<CardProfileSearchProps> = ({
     buttonText,
     onButtonClick,
 }) => {
+    const profilImage = imageSrc ?? 'https://res.cloudinary.com/dvt0xkd8d/image/upload/v1729586930/colllab/default_logo.png'
     return (
         <div key={index}>
             <img
                 alt={name}
                 className="w-full h-64 object-cover object-center rounded-lg"
                 height="400"
-                src={imageSrc}
+                src={profilImage}
                 width="600"
                 style={{ aspectRatio: "600/400", objectFit: "cover" }}
             />

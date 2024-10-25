@@ -16,6 +16,17 @@ class MaterialRepository extends ServiceEntityRepository
         parent::__construct($registry, Material::class);
     }
 
+    public function findDistinctBrands(int $material): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('DISTINCT e.brand')
+            ->leftJoin('m.equipment', 'e')
+            ->where('m.id = :materialId')
+            ->setParameter('materialId', $material)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Material[] Returns an array of Material objects
 //     */

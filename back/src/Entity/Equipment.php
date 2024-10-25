@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EquipmentRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['equipment:list','equipment:read']],
+    // normalizationContext: ['groups' => ['equipment:list','equipment:read']],
     operations: [
         new GetCollection(
             normalizationContext: ['groups' => ['equipment:list','equipment:read', ]]
@@ -37,7 +37,7 @@ class Equipment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['equipment:read', 'equipment:list'])]
+    #[Groups(['equipment:read', 'equipment:list','material:list',])]
     private ?string $brand = null;
 
     #[ORM\Column(length: 255)]
