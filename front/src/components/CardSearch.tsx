@@ -19,7 +19,7 @@ const CardProfileSearch: React.FC<CardProfileSearchProps> = ({
 }) => {
     const profilImage = imageSrc ?? 'https://res.cloudinary.com/dvt0xkd8d/image/upload/v1729586930/colllab/default_logo.png'
     return (
-        <div key={index}>
+        <div key={index} className="shadow-lg rounded-lg p-6 space-y-6">
             <img
                 alt={name}
                 className="w-full h-64 object-cover object-center rounded-lg"
