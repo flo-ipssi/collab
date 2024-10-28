@@ -87,12 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, UserEquipment>
      */
+    #[Groups(['user:read'])]
     #[ORM\OneToMany(targetEntity: UserEquipment::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userEquipment;
 
     /**
      * @var Collection<int, UserProfession>
      */
+    #[Groups(['user:read'])]
     #[ORM\OneToMany(targetEntity: UserProfession::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $userProfessions;
 

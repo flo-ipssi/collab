@@ -56,14 +56,27 @@ const Search: React.FC<Props> = () => {
    const totalPages = Math.ceil(totalResults / resultsPerPage);
 
    // Récupérer les résultats de recherche
-   const fetchSearchResults = async (term: string) => {
-      if (term.length >= 3) {
+   const fetchSearchResults = async () => {
+      if (searchTerm.length >= 3) {
          setLoading(true);
          try {
-            const response = await axios.get(
-               `http://localhost:8000/api/search/${term}`,
+            const response = await axios.post(
+               "http://localhost:8000/api/search",
                {
-                  headers: { Authorization: `Bearer ${token}` },
+                  keyword: searchTerm,
+                  localisation: {
+                     countrySelected: {
+                        label: formLocationData.countrySelected?.label ?? "",
+                     },
+                     citySelected: {
+                        label: formLocationData.citySelected?.label ?? "",
+                     },
+                  },
+                  activities: selectedActivities,
+                  material: selectedMaterial,
+               },
+               {
+                  headers: { Authorization: `Bearer ${token}` }
                }
             );
             setSearchResults(response.data.results || []);
@@ -92,7 +105,6 @@ const Search: React.FC<Props> = () => {
       debouncedFetchSearchResults(searchTerm);
    }, [searchTerm]);
 
-   // Récupérer les données de matériaux et d'activités
    const fetchMaterials = async () => {
       try {
          const response = await axios.get("http://localhost:8000/api/materials");
@@ -118,27 +130,36 @@ const Search: React.FC<Props> = () => {
 
 
    const applyFilters = async () => {
-      console.log(searchTerm, formLocationData.citySelected, formLocationData.countrySelected);
-      console.log(selectedMaterial);
-      console.log(selectedActivities);
+      setLoading(true);
+      try {
+         const response = await axios.post(
+            "http://localhost:8000/api/search",
+            {
+               keyword: searchTerm,
+               localisation: {
+                  countrySelected: {
+                     label: formLocationData.countrySelected?.label ?? "",
+                  },
+                  citySelected: {
+                     label: formLocationData.citySelected?.label ?? "",
+                  },
+               },
+               activities: selectedActivities,
+               material: selectedMaterial,
+            },
+            {
+               headers: { Authorization: `Bearer ${token}` }
+            }
+         );
 
-      // Effectuer la recherche avec les filtres
-      // ...
-      //  setLoading(true);
-      // try {
-      //    const response = await axios.post("http://localhost:8000/api/search", {
-      //       material: selectedMaterial,
-      //       activities: selectedActivities,
-      //       musicStyles: selectedStyles,
-      //       localisation: formLocationData,
-      //    });
-      //    setSearchResults(response.data.results);
-      // } catch (error) {
-      //    console.error("Erreur lors de la recherche avec filtres", error);
-      // } finally {
-      //    setLoading(false);
-      // }
+         setSearchResults(response.data.results);
+      } catch (error) {
+         console.error("Erreur lors de la recherche avec filtres", error);
+      } finally {
+         setLoading(false);
+      }
    };
+
 
    return (
       <div className="flex-1 gap-6 p-6">
@@ -148,7 +169,7 @@ const Search: React.FC<Props> = () => {
                <div className="relative flex-1">
                   <input
                      type="search"
-                     placeholder="Nom d'utilisateur, nom ou modèle du matériel, activité..."
+                     placeholder="Nom d'utilisateur, nom ou modèle du matériel..."
                      value={searchTerm}
                      onChange={(e) => setSearchTerm(e.target.value)}
                      className="pl-3 w-full border border-gray-300 rounded-md py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -187,6 +208,9 @@ const Search: React.FC<Props> = () => {
                         }
                         label="Activités"
                      >
+                        <MenuItem value="" >
+                           <em >Aucun</em>
+                        </MenuItem>
                         {activities.map((activity) => (
                            <MenuItem key={activity.id} value={activity.id}>
                               {activity.name}
@@ -246,8 +270,8 @@ const Search: React.FC<Props> = () => {
                               <li key={page}>
                                  <button
                                     className={`px-3 py-1 border rounded ${totalPages === page
-                                          ? "bg-blue-500 text-white"
-                                          : "bg-white text-blue-500"
+                                       ? "bg-blue-500 text-white"
+                                       : "bg-white text-blue-500"
                                        }`}
                                  >
                                     {page}

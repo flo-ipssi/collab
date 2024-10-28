@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\UserProfessionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserProfessionRepository::class)]
 class UserProfession
@@ -19,6 +20,7 @@ class UserProfession
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user:read'])]
     private ?Profession $profession = null;
 
     public function getId(): ?int

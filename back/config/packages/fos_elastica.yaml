@@ -3,6 +3,20 @@ fos_elastica:
     default: { host: '%env(ELASTICSEARCH_HOST)%', port: '%env(ELASTICSEARCH_PORT)%' }
   indexes:
     user:
+      settings:
+        analysis:
+          filter:
+            ngram_filter:
+              type: "ngram"
+              min_gram: 3
+              max_gram: 15
+          analyzer:
+            ngram_analyzer:
+              type: custom
+              tokenizer: standard
+              filter: [lowercase, ngram_filter] # pour insensibilité à la casse et l'analyse NGram
+        index:
+          max_ngram_diff: 12
       persistence:
         finder: ~
         driver: orm
@@ -11,10 +25,17 @@ fos_elastica:
       properties:
         username:
           type: text
+          analyzer: ngram_analyzer
         country:
           type: text
+          fields:
+            raw:
+              type: keyword
         city:
           type: text
+          fields:
+            raw:
+              type: keyword
         zip_code:
           type: text
         profile:
@@ -22,15 +43,34 @@ fos_elastica:
           properties:
             bio:
               type: text
-        userskill:
-          type: object
+            musicStyles:
+              type: text
+        userProfession:
+          type: nested
           properties:
-            skill_id:
+            profession:
               type: object
               properties:
+                id:
+                  type: integer
                 name:
                   type: text
-                description:
+        userEquipment:
+          type: object
+          properties:
+            equipment:
+              type: object
+              properties:
+                brand:
                   type: text
+                model:
+                  type: text
+                material:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: text
 
     

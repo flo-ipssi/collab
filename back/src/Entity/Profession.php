@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    normalizationContext: ['groups' => ['profession:read']],
+    normalizationContext: ['groups' => ['profession:read', 'user:read']],
     operations: [
         new GetCollection(),
         new Get(),
@@ -29,7 +29,7 @@ class Profession
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['profession:read'])]
+    #[Groups(['profession:read', 'user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
