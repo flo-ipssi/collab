@@ -2,3 +2,4 @@
 front/.env
 front/.local
 back/.env
+back/.env.test
