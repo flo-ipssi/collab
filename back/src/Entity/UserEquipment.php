@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserEquipmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
+
 
 #[ORM\Entity(repositoryClass: UserEquipmentRepository::class)]
 class UserEquipment
@@ -24,6 +26,7 @@ class UserEquipment
 
     #[ORM\ManyToOne(inversedBy: 'userEquipment')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['user:read'])]
     private ?Equipment $equipment = null;
 
     public function getId(): ?int

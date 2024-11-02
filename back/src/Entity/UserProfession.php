@@ -18,7 +18,7 @@ class UserProfession
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
+    #[ORM\ManyToOne(inversedBy: 'userProfessions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['user:read'])]
     private ?Profession $profession = null;

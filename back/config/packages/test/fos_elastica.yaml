@@ -1,9 +1,11 @@
 fos_elastica:
-  clients:
-    default: { host: '%env(ELASTICSEARCH_HOST)%', port: '%env(ELASTICSEARCH_PORT)%' }
   indexes:
     user:
       settings:
+        index:
+          number_of_shards: 1
+          number_of_replicas: 0
+          max_ngram_diff: 12
         analysis:
           filter:
             ngram_filter:
@@ -15,13 +17,11 @@ fos_elastica:
               type: custom
               tokenizer: standard
               filter: [lowercase, ngram_filter]
-        index:
-          max_ngram_diff: 12
       persistence:
-        finder: ~
+        model: App\Entity\User
         driver: orm
         provider: ~
-        model: App\Entity\User
+        finder: ~
       properties:
         username:
           type: text
@@ -74,5 +74,3 @@ fos_elastica:
                       type: integer
                     name:
                       type: text
-
-    

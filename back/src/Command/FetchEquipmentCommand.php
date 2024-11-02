@@ -103,19 +103,16 @@ class FetchEquipmentCommand extends Command
                         // Recherche du matériel correspondant dans la base de données
                         $material = $this->entityManager->getRepository(Material::class)->findOneBy(['name' => $materialName]);
 
-                        // Créer un nouvel équipement
                         $equipment = new Equipment();
                         $equipment->setBrand($brand);
                         $equipment->setModel($model);
                         $equipment->setMaterial($material);
 
-                        // Enregistrer l'équipement dans la base de données
                         $this->entityManager->persist($equipment);
                         $io->success("Added equipment: $brand $model (Material: $materialName)");
                     }
                 }
 
-                // Sauvegarder les changements dans la base de données
                 $this->entityManager->flush();
                 $io->success("Page $page fetched and saved to the database.");
             } else {
@@ -131,6 +128,6 @@ class FetchEquipmentCommand extends Command
                 return $instrument;
             }
         }
-        return null;  // Si aucune correspondance n'est trouvée
+        return null;
     }
 }

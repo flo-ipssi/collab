@@ -5,8 +5,6 @@ namespace App\Controller;
 use Elastica\Query\BoolQuery;
 use Elastica\Query\MultiMatch;
 use Elastica\Query\Nested;
-use Elastica\Query\MatchAll;
-use Elastica\Query\QueryString;
 use Elastica\Query\Term;
 use Elastica\Query\Terms;
 use FOS\ElasticaBundle\Finder\PaginatedFinderInterface;
@@ -28,7 +26,6 @@ class SearchController
     #[Route('/api/search', name: 'search', methods: ['POST'])]
     public function search(Request $request, int $page = 1)
     {
-        // Extraction des paramètres de la requête
         $data = json_decode($request->getContent(), true);
         $keyword = $data['keyword'] ?? null;
         $page = $data['page'] ?? 1;
@@ -39,56 +36,44 @@ class SearchController
         $selectedStyles = $data['musicStyles'] ?? [];
 
         $boolQuery = new BoolQuery();
+
         if ($keyword) {
             $multiMatch = new MultiMatch();
             $multiMatch->setQuery($keyword)
-                ->setFields(['username', 'profile.bio', 'userEquipment.equipment.model'])
+                ->setFields(['username', 'profile.bio', 'userEquipment.equipment.material.model'])
                 ->setType('phrase_prefix');
             $boolQuery->addMust($multiMatch);
         }
 
-        //     $queryString = new QueryString();
-
-        //     $queryString->setQuery('*' . $keyword . '*')
-        //         ->setFields(['username', 'profile.bio', 'userEquipment.equipment.model']);
-        //     $boolQuery->addFilter($queryString);
-        // }
-
         if ($country) {
-            // var_dump($country);
             $countryTerm = new Term();
             $countryTerm->setTerm('country.raw', $country);
             $boolQuery->addFilter($countryTerm);
-            // $queryString = new QueryString();
-
-            // $queryString->setQuery('*' . $country . '*');
-            // $queryString->setFields(['country']);
-            // $boolQuery->addFilter($queryString);
         }
 
         if ($city) {
-            // var_dump($city);
-            // $cityTerm = new Term();
-            // $cityTerm->setTerm('city', $city);
-            // $boolQuery->addFilter($cityTerm);
-
             $cityTerm = new Term();
             $cityTerm->setTerm('city.raw', $city);
             $boolQuery->addFilter($cityTerm);
         }
 
-        if ($selectedMaterial) {
-            $materialTerm = new Term();
-            $materialTerm->setTerm('userEquipment.equipment.material.id', $selectedMaterial);
-            $boolQuery->addFilter($materialTerm);
-        }
-
         if (!empty($selectedActivities)) {
             $nestedQuery = new Nested();
-            $nestedQuery->setPath('userProfession')
+            $nestedQuery->setPath('userProfessions.profession')
                 ->setQuery(
-                    (new BoolQuery())->addMust(
-                        new Terms('userProfession.profession.id', $selectedActivities)
+                    (new BoolQuery())->addFilter(
+                        new Terms('userProfessions.profession.id', $selectedActivities)
+                    )
+                );
+            $boolQuery->addFilter($nestedQuery);
+        }
+        
+        if (!empty($selectedMaterial)) {
+            $nestedQuery = new Nested();
+            $nestedQuery->setPath('userEquipment.equipment')
+                ->setQuery(
+                    (new BoolQuery())->addFilter(
+                        new Terms('userEquipment.equipment.id', $selectedMaterial)
                     )
                 );
             $boolQuery->addFilter($nestedQuery);

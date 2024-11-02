@@ -46,7 +46,7 @@ class Material
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['material:list', 'material:read', 'equipment:read'])]
+    #[Groups(['material:list', 'material:read', 'equipment:read', 'user:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

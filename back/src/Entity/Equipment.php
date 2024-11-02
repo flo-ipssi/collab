@@ -33,7 +33,7 @@ class Equipment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['equipment:read', 'equipment:list'])]
+    #[Groups(['equipment:read', 'equipment:list', 'user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -46,7 +46,7 @@ class Equipment
 
     #[ORM\ManyToOne(inversedBy: 'equipment')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['equipment:read', 'equipment:list'])]
+    #[Groups(['equipment:read', 'equipment:list', 'user:read'])]
     private ?Material $material = null;
 
 
