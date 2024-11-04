@@ -40,9 +40,17 @@ class SearchController
         if ($keyword) {
             $multiMatch = new MultiMatch();
             $multiMatch->setQuery($keyword)
-                ->setFields(['username', 'profile.bio', 'userEquipment.equipment.material.model'])
-                ->setType('phrase_prefix');
+                ->setFields([
+                    'username',
+                    'profile.bio',
+                    // 'userEquipment.equipment.material.model',
+                    // 'userEquipment.equipment.brand',
+                    // 'userEquipment.equipment.model'
+                ])
+                ->setType('cross_fields')
+                ->setQuery('*' . $keyword . '*');
             $boolQuery->addMust($multiMatch);
+            
         }
 
         if ($country) {
@@ -67,13 +75,13 @@ class SearchController
                 );
             $boolQuery->addFilter($nestedQuery);
         }
-        
+
         if (!empty($selectedMaterial)) {
             $nestedQuery = new Nested();
-            $nestedQuery->setPath('userEquipment.equipment')
+            $nestedQuery->setPath('userEquipment.equipment.material')
                 ->setQuery(
                     (new BoolQuery())->addFilter(
-                        new Terms('userEquipment.equipment.id', $selectedMaterial)
+                        new Terms('userEquipment.equipment.material.id', $selectedMaterial)
                     )
                 );
             $boolQuery->addFilter($nestedQuery);

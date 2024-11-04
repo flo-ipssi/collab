@@ -37,11 +37,11 @@ class Equipment
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['equipment:read', 'equipment:list','material:list',])]
+    #[Groups(['equipment:read', 'equipment:list','material:list', 'user:read'])]
     private ?string $brand = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['equipment:read', 'equipment:list'])]
+    #[Groups(['equipment:read', 'equipment:list', 'user:read'])]
     private ?string $model = null;
 
     #[ORM\ManyToOne(inversedBy: 'equipment')]

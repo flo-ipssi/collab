@@ -47,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
 
-    #[Groups(['user:read', 'user:write'])]
+    #[Groups([ 'user:write'])]
     #[ORM\Column(length: 180)]
     #[Assert\NotBlank]
     #[Assert\Email]

@@ -42,7 +42,7 @@ class Material
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['material:list', 'material:read', 'equipment:read'])]
+    #[Groups(['material:list', 'material:read', 'equipment:read', 'user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

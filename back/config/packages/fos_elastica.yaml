@@ -43,6 +43,7 @@ fos_elastica:
           properties:
             bio:
               type: text
+              analyzer: ngram_analyzer
             musicStyles:
               type: text
         userProfessions:
@@ -65,8 +66,10 @@ fos_elastica:
                   type: integer
                 brand:
                   type: text
+                  analyzer: ngram_analyzer
                 model:
                   type: text
+                  analyzer: ngram_analyzer
                 material:
                   type: nested
                   properties:
@@ -74,5 +77,6 @@ fos_elastica:
                       type: integer
                     name:
                       type: text
+                      analyzer: ngram_analyzer
 
     
